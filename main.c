@@ -65,14 +65,14 @@ int main(int argc, char *argv[])
       loadPlasma3D(&D);
       t=0;
     }
-/*
+
     //rooping time 
-   labSaveStep=D.boostSaveStep;
-   factor=D.gamma*(1+D.beta);
+//   labSaveStep=D.boostSaveStep;
+//   factor=D.gamma*(1+D.beta);
 
     while(iteration<=D.maxStep)
     {
-   
+/*   
        //probe data
        probe(&D,iteration);
        
@@ -80,7 +80,7 @@ int main(int argc, char *argv[])
        {
 //          MPI_TransferF_Xminus(&D);
 //          MPI_TransferF_XplusFilter(&D);
-          filterField(&D);       
+//          filterField(&D);       
        }
        
        if(D.boostOn==1)
@@ -93,37 +93,37 @@ int main(int argc, char *argv[])
           }
 
        }
-
+*/
        //save File      
        if(iteration%D.saveStep==0 && iteration>=D.saveStart)   
        {
 
           if(D.fieldSave==1) { 
-            saveField2D(&D,iteration);
-            saveRaman2D(&D,iteration);
+            saveField3D(&D,iteration);
+//            saveRaman2D(&D,iteration);
             if(myrank==0)
               printf("field%d is made.\n",iteration);  
           }
           if(D.particleSave==1) { 
-            saveParticle(&D,iteration);
+            saveParticle3D(&D,iteration);
             if(myrank==0)
               printf("particle%d is made.\n",iteration);              
           }
           if(D.rhoSave==1) { 
-            saveRho2D(&D,iteration);
-            if(myrank==0)
-              printf("rho%d is made.\n",iteration);              
+//            saveRho2D(&D,iteration);
+//            if(myrank==0)
+//              printf("rho%d is made.\n",iteration);              
           }
           if(D.dumpSave==1 && iteration>=D.dumpStart) { 
-            saveDump2D(D,iteration);
-            if(myrank==0)
-              printf("dump%d is made.\n",iteration);              
+//            saveDump2D(D,iteration);
+//            if(myrank==0)
+//              printf("dump%d is made.\n",iteration);              
           }
 
           if(D.probeNum>0) { 
-            saveProbe(&D,iteration);
-            if(myrank==0)
-              printf("probe%d is made.\n",iteration);              
+//            saveProbe(&D,iteration);
+//            if(myrank==0)
+//              printf("probe%d is made.\n",iteration);              
           }
        }
 
@@ -132,8 +132,8 @@ int main(int argc, char *argv[])
        if(D.boostOn==0)	{
          L=D.laserList;
          while(L->next)  {
-           if(L->direction==1)     loadLaser2D(&D,L,t); 
-           else if(L->direction==-1)     loadLaserOpp2D(&D,L,t); 
+//           if(L->direction==1)     loadLaser2D(&D,L,t); 
+//           else if(L->direction==-1)     loadLaserOpp2D(&D,L,t); 
            L=L->next;
          }
        }
@@ -143,18 +143,18 @@ int main(int argc, char *argv[])
 //       else           periodY(&D);
        if(D.fieldType==1)
        {
-         if(D.pmlOn==1)   absorpbing(&D);
-         solveField2DC_DSX(&D);
-         MPI_TransferF_DSX_YminusC(&D,D.numShareDn);
-         MPI_TransferF_DSX_YplusC(&D,D.numShareUp);
+//         if(D.pmlOn==1)   absorpbing(&D);
+         solveField3DC_DSX(&D);
+//         MPI_TransferF_DSX_YminusC(&D,D.numShareDn);
+//         MPI_TransferF_DSX_YplusC(&D,D.numShareUp);
 //         if()  periodY1coreC(&D);   
 
-         if(D.pmlOn==1)   absorpbingC(&D);
-         solveField2D_DSX(&D);
-         MPI_TransferF_DSX_Yminus(&D,D.numShareDn);
-         MPI_TransferF_DSX_Yplus(&D,D.numShareUp);
+//         if(D.pmlOn==1)   absorpbingC(&D);
+         solveField3D_DSX(&D);
+//         MPI_TransferF_DSX_Yminus(&D,D.numShareDn);
+//         MPI_TransferF_DSX_Yplus(&D,D.numShareUp);
        }
-
+/*
        if(D.interpolationType==1)
          interpolation2D_1st(&D,&Ext);
        else if(D.interpolationType==2)
@@ -203,7 +203,7 @@ int main(int argc, char *argv[])
           MPI_TransferP_Yplus(&D);
           removeEdge2D(&D);
        }
-
+*/
        //time update
        t+=D.dt;  
        if(iteration%10==0 && myrank==0)  
@@ -224,8 +224,8 @@ int main(int argc, char *argv[])
     fprintf(out,"running time=%gm\n",time_spent/60.0);
     fclose(out);
 
-    clean2D(&D);
-*/    
+//    clean2D(&D);
+    
     MPI_Finalize();
 
     return 0;

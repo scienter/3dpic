@@ -1,6 +1,7 @@
 EXEC = show
 CC = mpicc 
-OBJS = main.o parameterSetting.o findparam.o boundary.o loadPlasma3D.o# loadLaser.o fieldSolve.o fieldShareY_DSX.o interpolation.o particlePush.o updateCurrent_DSX.o rearrangeParticles.o particleShareY.o removeEdge.o movingDomain.o probe.o dumpData.o clean.o filter.o boostShot.o pml.o
+OBJS = main.o parameterSetting.o findparam.o boundary.o loadPlasma3D.o saveFile.o fieldSolve.o
+# loadLaser.o fieldSolve.o fieldShareY_DSX.o interpolation.o particlePush.o updateCurrent_DSX.o rearrangeParticles.o particleShareY.o removeEdge.o movingDomain.o probe.o dumpData.o clean.o filter.o boostShot.o pml.o
 INCL = constants.h laser.h mesh.h particle.h plasma.h
 LIBS = -lm
 $(EXEC):$(OBJS)

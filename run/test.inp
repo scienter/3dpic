@@ -43,7 +43,7 @@
 
  L=1
  M=2
- N=2
+ N=1
 
 [Laser]
  wavelength=1e-6
@@ -68,8 +68,8 @@
 [Plasma]
  species=Electron
  type=Polygon
- density=0
- numberInCell=10
+ density=1e22
+ numberInCell=1
  startIndex=0		//The starting particle index
  velocityX=0.0
  with_next_species=0
@@ -77,31 +77,31 @@
  temperature=0
 
  Xnodes=4
- X0=10e-6
- X1=40e-6
- X2=9000e-6
- X3=9500e-6
+ X0=2e-6
+ X1=3e-6
+ X2=8e-6
+ X3=9e-6
  Xn0=0
  Xn1=1
  Xn2=1
- Xn3=1
+ Xn3=0
 
  Ynodes=4
- Y0=10e-6
- Y1=40e-6
- Y2=9000e-6
- Y3=9500e-6
+ Y0=2e-6
+ Y1=3e-6
+ Y2=8e-6
+ Y3=9e-6
  Yn0=0
  Yn1=1
  Yn2=1
- Yn3=1
+ Yn3=0
 
  Znodes=4
- Z0=10e-6
- Z1=40e-6
- Z2=9000e-6
- Z3=9500e-6
+ Z0=2e-6
+ Z1=3e-6
+ Z2=8e-6
+ Z3=9e-6
  Zn0=0
  Zn1=1
  Zn2=1
- Zn3=1
+ Zn3=0
