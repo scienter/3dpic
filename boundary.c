@@ -49,6 +49,8 @@ void boundary(Domain *D,External *Ext)
              D->minYSub=minY;
              D->maxYSub=maxY;
              D->nySub=tmp;
+             D->nextCore=myrank+D->M;
+             D->prevCore=myrank-D->M;
           }
        }
      }
@@ -68,12 +70,15 @@ void boundary(Domain *D,External *Ext)
              D->minZSub=minZ;
              D->maxZSub=maxZ;
              D->nzSub=tmp;
+             D->nextCore=myrank+1;
+             D->prevCore=myrank-1;
           }
        }
      }
      
 
 printf("rank=%d, minXSub=%d,maxSub=%d,minYSub=%d,maxYSub=%d,minZSub=%d,maxZSub=%d\n",myrank,D->minXSub,D->maxXSub,D->minYSub,D->maxYSub,D->minZSub,D->maxZSub);
+printf("rank=%d, nextCore=%d, prevCore=%d\n",myrank,D->nextCore,D->prevCore);
 
      D->istart=2;
      D->iend=D->nxSub+2;
@@ -188,8 +193,8 @@ printf("rank=%d, minXSub=%d,maxSub=%d,minYSub=%d,maxYSub=%d,minZSub=%d,maxZSub=%
       D->Lfield = (float *)malloc(numberData*sizeof(float ));
       numberData=2*(D->nySub+5)*2;
       D->Ufield = (float *)malloc(numberData*sizeof(float ));
-      numberData=2*(D->nySub+5)*3;
-      D->Dfield = (float *)malloc(numberData*sizeof(float ));
+      numberData=3*(D->nx+5)*(D->nzSub+5)*3;
+      D->minusY = (float *)malloc(numberData*sizeof(float ));
     break;
     }    
 

@@ -55,10 +55,12 @@ typedef struct _Domain
    int L;
    int M;
    int N;
+   int nextCore;
+   int prevCore;
    
    double *upJ;
    double *btJ;
-   float *btF;
+   float *minusY;
    float *upF;
    float *btFC;
    float *upFC;

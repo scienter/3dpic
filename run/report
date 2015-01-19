@@ -1,4 +1,4 @@
-nx=100
+nx=200
 ny=100
-cores=2
-running time=0.133333m
+cores=1
+running time=26.15m

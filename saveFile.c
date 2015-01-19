@@ -217,7 +217,8 @@ void saveField3D(Domain *D,int iteration)
           Bx=D->Bx[i][j][k];    
           By=D->Sl[i][j][k]-D->Sr[i][j][k];
           Bz=D->Pr[i][j][k]-D->Pl[i][j][k];
-          fprintf(out,"%g %g %g %g %g %g %g %g %g\n",x,y,z,Ex,Ey,Ez,Bx,By,Bz);
+//          fprintf(out,"%g %g %g %g %g %g %g %g %g\n",x,y,z,Ex,Ey,Ez,Bx,By,Bz);
+          fprintf(out,"%g %g %g %g %g %g %g %g\n",x,y,Ex,Ey,Ez,Bx,By,Bz);
         }
         fprintf(out,"\n");                 
       }

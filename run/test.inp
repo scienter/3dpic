@@ -12,8 +12,8 @@
  CurrentType=1
  FieldType=1
 
- maxStep=10
- saveStep=10
+ maxStep=400
+ saveStep=50
  saveStart=0
  dumpSave=0
  dumpStart=40000 
@@ -21,15 +21,15 @@
  moving=0
 
  minX=0
- maxX=10e-6
+ maxX=20e-6
  minY=0
- maxY=10e-6
+ maxY=40e-6
  minZ=0
- maxZ=10e-6
+ maxZ=40e-6
  lambda=1e-6
  divisionLambda=10	// dx is [wavelength/divisionLambda]
- dy_over_dx = 1
- dz_over_dx = 1
+ dy_over_dx = 4
+ dz_over_dx = 4
 
  boostGamma=1
  filter=0
@@ -42,19 +42,19 @@
  pmlCell=10
 
  L=1
- M=2
- N=1
+ M=3
+ N=2
 
 [Laser]
  wavelength=1e-6
- a0=3
- rU=1			//number of wave lenth
- rD=1
+ a0=1
+ rU=3			//number of wave lenth
+ rD=3
  flat=0
  polarity=2
- loadPositionX=1e-5		//laser start position [m]
- beamWaist=8e-6
- focus=40e-6
+ loadPositionX=0e-6		//laser start position [m]
+ beamWaist=1e-6
+ focus=10e-6
 
 
 [External]

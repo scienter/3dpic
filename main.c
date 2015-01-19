@@ -132,6 +132,7 @@ int main(int argc, char *argv[])
        if(D.boostOn==0)	{
          L=D.laserList;
          while(L->next)  {
+           loadLaser3D(&D,L,t); 
 //           if(L->direction==1)     loadLaser2D(&D,L,t); 
 //           else if(L->direction==-1)     loadLaserOpp2D(&D,L,t); 
            L=L->next;
@@ -145,8 +146,11 @@ int main(int argc, char *argv[])
        {
 //         if(D.pmlOn==1)   absorpbing(&D);
          solveField3DC_DSX(&D);
-//         MPI_TransferF_DSX_YminusC(&D,D.numShareDn);
-//         MPI_TransferF_DSX_YplusC(&D,D.numShareUp);
+         if(D.M>1)
+         {
+           MPI_TransferF_DSX_YminusC(&D);
+//           MPI_TransferF_DSX_YplusC(&D,D.numShareUp);
+         }
 //         if()  periodY1coreC(&D);   
 
 //         if(D.pmlOn==1)   absorpbingC(&D);
