@@ -564,7 +564,7 @@ void loadPlasma3D(Domain *D)
            p=particle[i][j][k].head[s]->pt;
            while(p)
            {
-             p->Ex=p->Bx=p->Pr=p->Pl=p->Sr=p->Sl=0.0;
+             p->Ex=p->Ey=p->Ez=p->Bx=p->By=p->Bz=0.0;
              v1=maxwellianVelocity(LL->temperature)/velocityC;
              v2=maxwellianVelocity(LL->temperature)/velocityC;
              v3=maxwellianVelocity(LL->temperature)/velocityC;

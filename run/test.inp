@@ -12,7 +12,7 @@
  CurrentType=1
  FieldType=1
 
- maxStep=400
+ maxStep=300
  saveStep=50
  saveStart=0
  dumpSave=0
@@ -23,13 +23,13 @@
  minX=0
  maxX=20e-6
  minY=0
- maxY=40e-6
+ maxY=20e-6
  minZ=0
- maxZ=40e-6
+ maxZ=20e-6
  lambda=1e-6
  divisionLambda=10	// dx is [wavelength/divisionLambda]
- dy_over_dx = 4
- dz_over_dx = 4
+ dy_over_dx = 2
+ dz_over_dx = 2
 
  boostGamma=1
  filter=0
@@ -42,7 +42,7 @@
  pmlCell=10
 
  L=1
- M=3
+ M=2
  N=2
 
 [Laser]
@@ -53,17 +53,17 @@
  flat=0
  polarity=2
  loadPositionX=0e-6		//laser start position [m]
- beamWaist=1e-6
+ beamWaist=4e-6
  focus=10e-6
 
 
 [External]
- E1=0
- E2=0
- E3=0
- B1=0
- B2=0
- B3=0
+ Ex=0
+ Ey=0
+ Ez=0
+ Bx=0
+ By=0
+ Bz=0
 
 [Plasma]
  species=Electron
@@ -79,8 +79,8 @@
  Xnodes=4
  X0=2e-6
  X1=3e-6
- X2=8e-6
- X3=9e-6
+ X2=18e-6
+ X3=19e-6
  Xn0=0
  Xn1=1
  Xn2=1
@@ -89,8 +89,8 @@
  Ynodes=4
  Y0=2e-6
  Y1=3e-6
- Y2=8e-6
- Y3=9e-6
+ Y2=18e-6
+ Y3=19e-6
  Yn0=0
  Yn1=1
  Yn2=1
@@ -99,8 +99,8 @@
  Znodes=4
  Z0=2e-6
  Z1=3e-6
- Z2=8e-6
- Z3=9e-6
+ Z2=18e-6
+ Z3=19e-6
  Zn0=0
  Zn1=1
  Zn2=1

@@ -311,7 +311,7 @@ void MPI_TransferJ_DSX_Yminus(Domain *D)
 }
 */
 
-void MPI_TransferF_DSX_Yminus(Domain *D,float ***f1,float ***f2,float ***f3)
+void MPI_TransferF_DSX_Zminus(Domain *D,float ***f1,float ***f2,float ***f3)
 {
     int i,j,k,numberData,start,end,nx,nySub,nzSub,ibegin,ibottom;
     int istart,iend,jstart,jend,kstart,kend;
@@ -335,88 +335,88 @@ void MPI_TransferF_DSX_Yminus(Domain *D,float ***f1,float ***f2,float ***f3)
     MPI_Comm_size(MPI_COMM_WORLD, &nTasks);
     MPI_Comm_rank(MPI_COMM_WORLD, &myrank);            
 
-    numberData=3*(nx+5)*(nzSub+5)*3; 
-    rank=myrank%D->M;   
+    numberData=3*(nx+5)*(nySub+5)*3; 
+    rank=(int)(myrank/D->M);   
 
     //Transferring even ~ odd cores 
     start=0; 
-    for(j=0; j<3; j++)	// 3 layers in y direction
-      for(k=0; k<nzSub+5; k++)
+    for(k=0; k<3; k++)	// 3 layers in z direction
+      for(j=0; j<nySub+5; j++)
       {
         for(i=ibegin; i<ibottom; i++)
-          D->minusY[start+i]=f1[i][jstart+j][k];
+          D->minusZ[start+i]=f1[i][j][kstart+k];
         start+=nx+5;
         for(i=ibegin; i<ibottom; i++)
-          D->minusY[start+i]=f2[i][jstart+j][k];
+          D->minusZ[start+i]=f2[i][j][kstart+k];
         start+=nx+5;
         for(i=ibegin; i<ibottom; i++)
-          D->minusY[start+i]=f3[i][jstart+j][k];
+          D->minusZ[start+i]=f3[i][j][kstart+k];
         start+=nx+5;
       }
 
-    if(rank%2==0 && rank!=D->M-1)
+    if(rank%2==0 && rank!=D->N-1)
     {
-      MPI_Recv(D->minusY,numberData, MPI_FLOAT, myrank+1, myrank+1, MPI_COMM_WORLD,&status);  
+      MPI_Recv(D->minusZ,numberData, MPI_FLOAT, myrank+D->M, myrank+D->M, MPI_COMM_WORLD,&status);  
       start=0; 
-      for(j=0; j<3; j++)	// 3 layers in y direction
-        for(k=0; k<nzSub+5; k++)
+      for(k=0; k<3; k++)	// 3 layers in z direction
+        for(j=0; j<nySub+5; j++)
         {
           for(i=ibegin; i<ibottom; i++)
-            f1[i][jend+j][k]=D->minusY[start+i];
+            f1[i][j][kend+k]=D->minusZ[start+i];
           start+=nx+5;
           for(i=ibegin; i<ibottom; i++)
-            f2[i][jend+j][k]=D->minusY[start+i];
+            f2[i][j][kend+k]=D->minusZ[start+i];
           start+=nx+5;
           for(i=ibegin; i<ibottom; i++)
-            f3[i][jend+j][k]=D->minusY[start+i];
+            f3[i][j][kend+k]=D->minusZ[start+i];
           start+=nx+5;
         }  
     }
     else if(rank%2==1)
-       MPI_Send(D->minusY,numberData, MPI_FLOAT, myrank-1, myrank, MPI_COMM_WORLD);             
+       MPI_Send(D->minusZ,numberData, MPI_FLOAT, myrank-D->M, myrank, MPI_COMM_WORLD);             
     MPI_Barrier(MPI_COMM_WORLD);
 
     //Transferring odd ~ even cores             
     start=0; 
-    for(j=0; j<3; j++)	// 3 layers in y direction
-      for(k=0; k<nzSub+5; k++)
+    for(k=0; k<3; k++)	// 3 layers in z direction
+      for(j=0; j<nySub+5; j++)
       {
         for(i=ibegin; i<ibottom; i++)
-          D->minusY[start+i]=f1[i][jstart+j][k];
+          D->minusZ[start+i]=f1[i][j][kstart+k];
         start+=nx+5;
         for(i=ibegin; i<ibottom; i++)
-          D->minusY[start+i]=f2[i][jstart+j][k];
+          D->minusZ[start+i]=f2[i][j][kstart+k];
         start+=nx+5;
         for(i=ibegin; i<ibottom; i++)
-          D->minusY[start+i]=f3[i][jstart+j][k];
+          D->minusZ[start+i]=f3[i][j][kstart+k];
         start+=nx+5;
       }
         
-    if(rank%2==1 && rank!=D->M-1)
+    if(rank%2==1 && rank!=D->N-1)
     {
-      MPI_Recv(D->minusY,numberData, MPI_FLOAT, myrank+1, myrank+1, MPI_COMM_WORLD,&status);  
+      MPI_Recv(D->minusZ,numberData, MPI_FLOAT, myrank+D->M, myrank+D->M, MPI_COMM_WORLD,&status);  
       start=0; 
-      for(j=0; j<3; j++)	// 3 layers in y direction
-        for(k=0; k<nzSub+5; k++)
+      for(k=0; k<3; k++)	// 3 layers in z direction
+        for(j=0; j<nySub+5; j++)
         {
           for(i=ibegin; i<ibottom; i++)
-            f1[i][jend+j][k]=D->minusY[start+i];
+            f1[i][j][kend+k]=D->minusZ[start+i];
           start+=nx+5;
           for(i=ibegin; i<ibottom; i++)
-            f2[i][jend+j][k]=D->minusY[start+i];
+            f2[i][j][kend+k]=D->minusZ[start+i];
           start+=nx+5;
           for(i=ibegin; i<ibottom; i++)
-            f3[i][jend+j][k]=D->minusY[start+i];
+            f3[i][j][kend+k]=D->minusZ[start+i];
           start+=nx+5;
         }  
     }
     else if(rank%2==0 && rank!=0)
-       MPI_Send(D->minusY,numberData, MPI_FLOAT, myrank-1, myrank, MPI_COMM_WORLD);             
+       MPI_Send(D->minusZ,numberData, MPI_FLOAT, myrank-D->M, myrank, MPI_COMM_WORLD);             
     MPI_Barrier(MPI_COMM_WORLD);
 
 }
 
-void MPI_TransferF_DSX_Yplus(Domain *D,float ***f1,float ***f2,float ***f3)
+void MPI_TransferF_DSX_Zplus(Domain *D,float ***f1,float ***f2,float ***f3)
 {
     int i,j,k,numberData,start,end,nx,nySub,nzSub,ibegin,ibottom;
     int istart,iend,jstart,jend,kstart,kend;
@@ -440,82 +440,82 @@ void MPI_TransferF_DSX_Yplus(Domain *D,float ***f1,float ***f2,float ***f3)
     MPI_Comm_size(MPI_COMM_WORLD, &nTasks);
     MPI_Comm_rank(MPI_COMM_WORLD, &myrank);            
 
-    numberData=3*(nx+5)*(nzSub+5)*2; 
-    rank=myrank%D->M;   
+    numberData=3*(nx+5)*(nySub+5)*2; 
+    rank=(int)(myrank/D->M);   
 
     //Transferring even ~ odd cores 
     start=0; 
-    for(j=1; j<=2; j++)
-      for(k=0; k<nzSub+5; k++)
+    for(k=1; k<=2; k++)
+      for(j=0; j<nySub+5; j++)
       {
         for(i=ibegin; i<ibottom; i++)
-          D->plusY[start+i]=f1[i][jend-j][k];
+          D->plusZ[start+i]=f1[i][j][kend-k];
         start+=nx+5;
         for(i=ibegin; i<ibottom; i++)
-          D->plusY[start+i]=f2[i][jend-j][k];
+          D->plusZ[start+i]=f2[i][j][kend-k];
         start+=nx+5;
         for(i=ibegin; i<ibottom; i++)
-          D->plusY[start+i]=f3[i][jend-j][k];
+          D->plusZ[start+i]=f3[i][j][kend-k];
         start+=nx+5;
       }
       
     if(rank%2==1)
     {
-       MPI_Recv(D->plusY,numberData, MPI_FLOAT, myrank-1, myrank-1, MPI_COMM_WORLD,&status);  
+       MPI_Recv(D->plusZ,numberData, MPI_FLOAT, myrank-D->M, myrank-D->M, MPI_COMM_WORLD,&status);  
        start=0;
-       for(j=1; j<=2; j++)
-         for(k=0; k<nzSub+5; k++)
+       for(k=1; k<=2; k++)
+         for(j=0; j<nySub+5; j++)
          {
            for(i=ibegin; i<ibottom; i++)
-             f1[i][jstart-j][k]=D->plusY[start+i];
+             f1[i][j][kstart-k]=D->plusZ[start+i];
            start+=nx+5;
            for(i=ibegin; i<ibottom; i++)
-             f2[i][jstart-j][k]=D->plusY[start+i];
+             f2[i][j][kstart-k]=D->plusZ[start+i];
            start+=nx+5;
            for(i=ibegin; i<ibottom; i++)
-             f3[i][jstart-j][k]=D->plusY[start+i];
+             f3[i][j][kstart-k]=D->plusZ[start+i];
            start+=nx+5;
          }
     }
-    else if(rank%2==0 && rank!=D->M-1)
-       MPI_Send(D->plusY,numberData, MPI_FLOAT, myrank+1, myrank, MPI_COMM_WORLD);             
+    else if(rank%2==0 && rank!=D->N-1)
+       MPI_Send(D->plusZ,numberData, MPI_FLOAT, myrank+D->M, myrank, MPI_COMM_WORLD);             
     MPI_Barrier(MPI_COMM_WORLD);
 
     //Transferring odd ~ even cores             
     start=0; 
-    for(j=1; j<=2; j++)
-      for(k=0; k<nzSub+5; k++)
+    for(k=1; k<=2; k++)
+      for(j=0; j<nySub+5; j++)
       {
         for(i=ibegin; i<ibottom; i++)
-          D->plusY[start+i]=f1[i][jend-j][k];
+          D->plusZ[start+i]=f1[i][j][kend-k];
         start+=nx+5;
         for(i=ibegin; i<ibottom; i++)
-          D->plusY[start+i]=f2[i][jend-j][k];
+          D->plusZ[start+i]=f2[i][j][kend-k];
         start+=nx+5;
         for(i=ibegin; i<ibottom; i++)
-          D->plusY[start+i]=f3[i][jend-j][k];
+          D->plusZ[start+i]=f3[i][j][kend-k];
         start+=nx+5;
       }
         
     if(rank%2==0 && rank!=0)
     {
-       MPI_Recv(D->plusY,numberData, MPI_FLOAT, myrank-1, myrank-1, MPI_COMM_WORLD,&status);  
+       MPI_Recv(D->plusZ,numberData, MPI_FLOAT, myrank-D->M, myrank-D->M, MPI_COMM_WORLD,&status);  
        start=0;
-       for(j=1; j<=2; j++)
-         for(k=0; k<nzSub+5; k++)
+       for(k=1; k<=2; k++)
+         for(j=0; j<nySub+5; j++)
          {
            for(i=ibegin; i<ibottom; i++)
-             f1[i][jstart-j][k]=D->plusY[start+i];
+             f1[i][j][kstart-k]=D->plusZ[start+i];
            start+=nx+5;
            for(i=ibegin; i<ibottom; i++)
-             f2[i][jstart-j][k]=D->plusY[start+i];
+             f2[i][j][kstart-k]=D->plusZ[start+i];
            start+=nx+5;
            for(i=ibegin; i<ibottom; i++)
-             f3[i][jstart-j][k]=D->plusY[start+i];
+             f3[i][j][kstart-k]=D->plusZ[start+i];
            start+=nx+5;
          }
     }
-    else if(rank%2==1 && rank!=D->M-1)
-       MPI_Send(D->plusY,numberData, MPI_FLOAT, myrank+1, myrank, MPI_COMM_WORLD);             
+    else if(rank%2==1 && rank!=D->N-1)
+       MPI_Send(D->plusZ,numberData, MPI_FLOAT, myrank+D->M, myrank, MPI_COMM_WORLD);             
     MPI_Barrier(MPI_COMM_WORLD);
 }

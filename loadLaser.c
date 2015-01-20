@@ -53,15 +53,18 @@ void loadLaser3D(Domain *D,LaserList *L,double t)
    positionX=L->loadPointX+istart-D->minXSub;
    if(positionX>D->minXSub && positionX<=D->maxXSub)
      laserOK=1;
+//   if(positionX>D->minXSub && positionX<=D->maxXSub &&
+//      jC-D->minYSub>=jstart && jC-D->minYSub<jend &&
+//      kC-D->minZSub>=kstart && kC-D->minZSub<kend)
+//     laserOK=1;
 
 
    if(D->fieldType==1 && laserOK==1)
    {
      if(L->polarity==2)
      {
-//       D->Pr[positionX][jC][kC]=longitudinal*sin(omega*t);  
-//       D->Pl[positionX][jC][kC]=longitudinal*sin(omega*t);  
-
+//       D->Pr[positionX][jC-D->minYSub][kC-D->minZSub]=longitudinal*sin(omega*t);  
+//       D->Pl[positionX][jC-D->minYSub][kC-D->minZSub]=longitudinal*sin(omega*t);  
 
        w2=w*w;
        for(j=jstart; j<jend; j++)
@@ -77,7 +80,6 @@ void loadLaser3D(Domain *D,LaserList *L,double t)
            D->Pl[positionX][j][k]=amp;           
          } 
        }
-
      }  
 /*         
      else if(L->polarity==3 && laserOK==1)

@@ -20,7 +20,7 @@ void parameterSetting(Domain *D,External *Ext, char *input)
    int findLoadParameters();
    int findLaserParameters();
    float minX,maxX,minY,maxY,minZ,maxZ,positionX,factor,pMinX,pMaxX,pPosition;
-   float normalB,normalE,E1,E2,E3,B1,B2,B3,dyoverdx,dzoverdx;
+   float normalB,normalE,Ex,Ey,Ez,Bx,By,Bz,dyoverdx,dzoverdx;
    char str[100],name[100];
    int rank,minT,maxT,boostSaveStep,boostSaveStart,boostSaveEnd,tmpInt,fail=0,cnt;
    int i,j,k,n,numProbeX,numProbeY,numProbeZ,probeType;
@@ -216,34 +216,34 @@ void parameterSetting(Domain *D,External *Ext, char *input)
 
 
    //External field parameter setting
-   if(FindParameters("External",1,"E1",input,str)) E1=atof(str);
+   if(FindParameters("External",1,"Ex",input,str)) Ex=atof(str);
    else  {
-      printf("in [External], E1=? [V/m]\n");
+      printf("in [External], Ex=? [V/m]\n");
       fail=1;
    }
-   if(FindParameters("External",1,"E2",input,str)) E2=atof(str);
+   if(FindParameters("External",1,"Ey",input,str)) Ey=atof(str);
    else  {
-      printf("in [External], E2=? [V/m]\n");
+      printf("in [External], Ey=? [V/m]\n");
       fail=1;
    }
-   if(FindParameters("External",1,"E3",input,str)) E3=atof(str);
+   if(FindParameters("External",1,"Ez",input,str)) Ez=atof(str);
    else  {
-      printf("in [External], E3=? [V/m]\n");
+      printf("in [External], Ez=? [V/m]\n");
       fail=1;
    }
-   if(FindParameters("External",1,"B1",input,str)) B1=atof(str);
+   if(FindParameters("External",1,"Bx",input,str)) Bx=atof(str);
    else  {
-      printf("in [External], B1=? [Tesla]\n");
+      printf("in [External], Bx=? [Tesla]\n");
       fail=1;
    }
-   if(FindParameters("External",1,"B2",input,str)) B2=atof(str);
+   if(FindParameters("External",1,"By",input,str)) By=atof(str);
    else  {
-      printf("in [External], B2=? [Tesla]\n");
+      printf("in [External], By=? [Tesla]\n");
       fail=1;
    }
-   if(FindParameters("External",1,"B3",input,str)) B3=atof(str);
+   if(FindParameters("External",1,"Bz",input,str)) Bz=atof(str);
    else  {
-      printf("in [External], B3=? [Tesla]\n");
+      printf("in [External], Bz=? [Tesla]\n");
       fail=1;
    }
 
@@ -410,12 +410,12 @@ void parameterSetting(Domain *D,External *Ext, char *input)
    //additional external field parameters
    normalB=eMass*D->omega/(-eCharge);
    normalE=normalB*velocityC;
-   Ext->Pr=(E2/normalE+B3/normalB)*0.5;
-   Ext->Pl=(E2/normalE-B3/normalB)*0.5;
-   Ext->E1=E1/normalE;
-   Ext->Sr=(E3/normalE-B2/normalB)*0.5;
-   Ext->Sl=(E3/normalE+B2/normalB)*0.5;
-   Ext->B1=B1/normalB;
+   Ext->Ex=Ex/normalE;
+   Ext->Ey=Ey/normalE;
+   Ext->Ez=Ez/normalE;
+   Ext->Bx=Bx/normalB;
+   Ext->By=By/normalB;
+   Ext->Bz=Bz/normalB;
 
    //Laser parameter setting
    D->laserList = (LaserList *)malloc(sizeof(LaserList));

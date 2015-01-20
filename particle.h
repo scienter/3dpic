@@ -15,11 +15,11 @@ typedef struct _ptclList  {
     float p2;
     float p3;
     float Ex;    
+    float Ey;    
+    float Ez;    
     float Bx;    
-    float Pr;    
-    float Pl;    
-    float Sr;    
-    float Sl;    
+    float By;    
+    float Bz;    
     float index; 
     struct _ptclList *next;
 } ptclList;

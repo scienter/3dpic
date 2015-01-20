@@ -203,29 +203,32 @@ void saveField3D(Domain *D,int iteration)
       out = fopen(name,"w");
       factor=D->gamma*(1+D->beta);
 
-      k=(int)(D->nz*0.5);    
       for(i=istart; i<iend; i++)
       {
         for(j=jstart; j<jend; j++)
         {
-          x=(i-2+D->minXSub)*D->dx*D->lambda;
-          y=(j-2+D->minYSub)*D->dy*D->lambda;
-          z=(k-2+D->minZSub)*D->dz*D->lambda;
-          Ex=D->Ex[i][j][k];    
-          Ey=D->Pr[i][j][k]+D->Pl[i][j][k];
-          Ez=D->Sr[i][j][k]+D->Sl[i][j][k];
-          Bx=D->Bx[i][j][k];    
-          By=D->Sl[i][j][k]-D->Sr[i][j][k];
-          Bz=D->Pr[i][j][k]-D->Pl[i][j][k];
-//          fprintf(out,"%g %g %g %g %g %g %g %g %g\n",x,y,z,Ex,Ey,Ez,Bx,By,Bz);
-          fprintf(out,"%g %g %g %g %g %g %g %g\n",x,y,Ex,Ey,Ez,Bx,By,Bz);
+          for(k=kstart; k<kend; k++)
+          {
+            x=(i-2+D->minXSub)*D->dx*D->lambda;
+            y=(j-2+D->minYSub)*D->dy*D->lambda;
+            z=(k-2+D->minZSub)*D->dz*D->lambda;
+            Ex=D->Ex[i][j][k];    
+            Ey=D->Pr[i][j][k]+D->Pl[i][j][k];
+            Ez=D->Sr[i][j][k]+D->Sl[i][j][k];
+            Bx=D->Bx[i][j][k];    
+            By=D->Sl[i][j][k]-D->Sr[i][j][k];
+            Bz=D->Pr[i][j][k]-D->Pl[i][j][k];
+            fprintf(out,"%g %g %g %g %g %g %g %g %g\n",x,y,z,Ex,Ey,Ez,Bx,By,Bz);
+//          fprintf(out,"%g %g %g %g %g %g %g %g\n",x,y,Ex,Ey,Ez,Bx,By,Bz);
+          }
+          fprintf(out,"\n");                 
         }
         fprintf(out,"\n");                 
       }
       fclose(out);
     }
-
 }
+
 /*
 void saveRaman2D(Domain *D,int iteration)
 {
@@ -308,6 +311,7 @@ void saveParticle3D(Domain *D,int iteration)
               gamma=sqrt(1.0+p->p1*p->p1+p->p2*p->p2+p->p3*p->p3);
               index=p->index;
               fprintf(out,"%g %g %g %g %g %g %g %g\n",x,y,z,p1,p2,p3,gamma,index);               
+//              fprintf(out,"%g %g %g %g\n",x,y,z,p->Ey);               
               p=p->next;
             }
           }		//End of for(i,j)

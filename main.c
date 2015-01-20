@@ -148,27 +148,39 @@ int main(int argc, char *argv[])
          solveField3DC_DSX(&D);
          if(D.M>1)
          {
-           MPI_TransferF_DSX_YminusC(&D);
-//           MPI_TransferF_DSX_YplusC(&D,D.numShareUp);
+           MPI_TransferF_DSX_Yminus(&D,D.SrC,D.SlC,D.ExC);
+           MPI_TransferF_DSX_Yplus(&D,D.PrC,D.PlC,D.BxC);
+         }
+         if(D.N>1)
+         {
+           MPI_TransferF_DSX_Zminus(&D,D.PrC,D.PlC,D.ExC);
+           MPI_TransferF_DSX_Zplus(&D,D.SrC,D.SlC,D.BxC);
          }
 //         if()  periodY1coreC(&D);   
 
 //         if(D.pmlOn==1)   absorpbingC(&D);
          solveField3D_DSX(&D);
-//         MPI_TransferF_DSX_Yminus(&D,D.numShareDn);
-//         MPI_TransferF_DSX_Yplus(&D,D.numShareUp);
+         if(D.M>1)
+         {
+           MPI_TransferF_DSX_Yminus(&D,D.Sr,D.Sl,D.Ex);
+           MPI_TransferF_DSX_Yplus(&D,D.Pr,D.Pl,D.Bx);
+         }
+         if(D.N>1)
+         {
+           MPI_TransferF_DSX_Zminus(&D,D.Pr,D.Pl,D.Ex);
+           MPI_TransferF_DSX_Zplus(&D,D.Sr,D.Sl,D.Bx);
+         }
        }
-/*
+
        if(D.interpolationType==1)
-         interpolation2D_1st(&D,&Ext);
-       else if(D.interpolationType==2)
-         interpolation2D_2nd(&D,&Ext);
+         interpolation3D_1st(&D,&Ext);
+//       else if(D.interpolationType==2)
+//         interpolation2D_2nd(&D,&Ext);
 //       else if(D.currentType==3)
 //         interpolation2D_3rd(&D,&Ext);
 
-
-       particlePush2D(&D);
-
+       particlePush3D(&D);
+/*
        if(D.fieldType==1)
        {
 
@@ -182,32 +194,35 @@ int main(int argc, char *argv[])
          MPI_TransferJ_DSX_Yminus(&D);
 
        }
-
+*/
        if (iteration>=D.nx && D.moving==1 && D.boostOn==0)
        {
-          movingDomain2D(&D);
-          loadMovingPlasma2D(&D);          
-          rearrangeParticles2D(&D);
-          MPI_TransferP_Yminus(&D);
-          MPI_TransferP_Yplus(&D);
-          removeEdge2D(&D);
+//          movingDomain2D(&D);
+//          loadMovingPlasma2D(&D);          
+//          rearrangeParticles2D(&D);
+//          MPI_TransferP_Yminus(&D);
+//          MPI_TransferP_Yplus(&D);
+//          removeEdge2D(&D);
        }
        else if(D.boostOn==1) {
-          loadMovingPlasma2DBoost(&D);          
-          movingDomain2D(&D);
-          rearrangeParticles2D(&D);
-          MPI_TransferP_Yminus(&D);
-          MPI_TransferP_Yplus(&D);
-          removeEdge2DBoost(&D);
+//          loadMovingPlasma2DBoost(&D);          
+//          movingDomain2D(&D);
+//          rearrangeParticles2D(&D);
+//          MPI_TransferP_Yminus(&D);
+//          MPI_TransferP_Yplus(&D);
+//          removeEdge2DBoost(&D);
        }
        else
        {
-          rearrangeParticles2D(&D);
-          MPI_TransferP_Yminus(&D);
-          MPI_TransferP_Yplus(&D);
-          removeEdge2D(&D);
+          rearrangeParticles3D(&D);
+          if(D.M>1)
+          {
+            MPI_TransferP_Yminus(&D);
+//          MPI_TransferP_Yplus(&D);
+          }
+//          removeEdge2D(&D);
        }
-*/
+
        //time update
        t+=D.dt;  
        if(iteration%10==0 && myrank==0)  

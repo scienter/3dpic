@@ -61,9 +61,9 @@ typedef struct _Domain
    double *upJ;
    double *btJ;
    float *minusY;
-   float *upF;
-   float *btFC;
-   float *upFC;
+   float *plusY;
+   float *minusZ;
+   float *plusZ;
 
    float ***Ex;    
    float ***Bx;    
@@ -170,12 +170,12 @@ typedef struct _Particle
 
 typedef struct _External 
 {
-   float Pr;
-   float Pl;
-   float E1;
-   float Sr;
-   float Sl;
-   float B1;
+   float Ex;
+   float Ey;
+   float Ez;
+   float Bx;
+   float By;
+   float Bz;
 }  External;
 
 typedef struct _Probe
