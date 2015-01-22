@@ -80,9 +80,9 @@ typedef struct _Domain
    float ***Jx;    
    float ***Jy;    
    float ***Jz;    
-   float ***JxC;    
-   float ***JyC;    
-   float ***JzC;    
+   float ***JxOld;    
+   float ***JyOld;    
+   float ***JzOld;    
 
    //sharing mesh
    float *Ufield;

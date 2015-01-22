@@ -180,21 +180,23 @@ int main(int argc, char *argv[])
 //         interpolation2D_3rd(&D,&Ext);
 
        particlePush3D(&D);
-/*
+
        if(D.fieldType==1)
        {
 
          if(D.currentType==1)
-           updateCurrent2D_DSX_1st(&D);
-         else if(D.currentType==2)
-           updateCurrent2D_DSX_2nd(&D);
-         else if(D.currentType==3)
-           updateCurrent2D_DSX_3rd(&D);
-         MPI_TransferJ_DSX_Yplus(&D);
-         MPI_TransferJ_DSX_Yminus(&D);
-
+           updateCurrent3D_DSX_1st(&D);
+//         else if(D.currentType==2)
+//           updateCurrent2D_DSX_2nd(&D);
+//         else if(D.currentType==3)
+//           updateCurrent2D_DSX_3rd(&D);
+           if(D.M>1)
+           {
+             MPI_TransferJ_DSX_Yplus(&D);
+             MPI_TransferJ_DSX_Yminus(&D);
+           }
        }
-*/
+
        if (iteration>=D.nx && D.moving==1 && D.boostOn==0)
        {
 //          movingDomain2D(&D);

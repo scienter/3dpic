@@ -60,14 +60,12 @@ void MPI_TransferF_XplusFilter(Domain *D)
 }
 */
 
-/*
+
 void MPI_TransferJ_DSX_Yplus(Domain *D)
 {
-    int i,n,numberData,start,end,nx,nySub,ibegin,ibottom;
-    int istart,iend,jstart,jend;
-    int myrank, nTasks; 
-    FieldDSX **field;
-    field=D->fieldDSX;
+    int i,j,k,numberData,start,end,nx,nySub,nzSub,ibegin,ibottom;
+    int istart,iend,jstart,jend,kstart,kend;
+    int myrank, nTasks, rank; 
 
     MPI_Status status;         
    
@@ -76,7 +74,9 @@ void MPI_TransferJ_DSX_Yplus(Domain *D)
 
     nx=D->nx;
     nySub=D->nySub;
-    numberData=3*3*(nx+5);
+    nzSub=D->nzSub;
+    //first 3 is 3rd interpolation, 2nd 3 is Jx,Jy,Jz;
+    numberData=3*3*(nx+5)*(nzSub+5);
     ibegin=0;
     ibottom=nx+5;
 
@@ -84,40 +84,46 @@ void MPI_TransferJ_DSX_Yplus(Domain *D)
     iend=D->iend;
     jstart=D->jstart;
     jend=D->jend;
+    kstart=D->kstart;
+    kend=D->kend;
+
+    rank=myrank%D->M;
 
     //Transferring even ~ odd cores 
-    if(myrank%2==1)
+    if(rank%2==1)
     {
        MPI_Recv(D->upJ,numberData, MPI_DOUBLE, myrank-1, myrank-1, MPI_COMM_WORLD,&status);  
        start=0;
-       for(n=0; n<3; n++)
-       {
-         for(i=ibegin; i<ibottom; i++)
-           field[i][jstart+n].J1+=D->upJ[i+start];
-         start+=ibottom;
-         for(i=ibegin; i<ibottom; i++)
-           field[i][jstart+n].J2+=D->upJ[i+start];
-         start+=ibottom;
-         for(i=ibegin; i<ibottom; i++)
-           field[i][jstart+n].J3+=D->upJ[i+start];
-         start+=ibottom;
-       }
+       for(j=0; j<3; j++)
+         for(k=0; k<nzSub+5; k++)
+         {
+           for(i=ibegin; i<ibottom; i++)
+             D->Jx[i][jstart+j][k]+=D->upJ[i+start];
+           start+=ibottom;
+           for(i=ibegin; i<ibottom; i++)
+             D->Jy[i][jstart+j][k]+=D->upJ[i+start];
+           start+=ibottom;
+           for(i=ibegin; i<ibottom; i++)
+             D->Jz[i][jstart+j][k]+=D->upJ[i+start];
+           start+=ibottom;
+         }
     }
-    else if(myrank%2==0 && myrank!=nTasks-1)
+    else if(rank%2==0 && rank!=D->M-1)
     {
       start=0; 
-      for(n=0; n<3; n++)
-      {
-        for(i=ibegin; i<ibottom; i++)
-          D->upJ[start+i]=field[i][nySub+jstart+n].J1;
-        start+=ibottom;
-        for(i=ibegin; i<ibottom; i++)
-          D->upJ[start+i]=field[i][nySub+jstart+n].J2;
-        start+=ibottom;
-        for(i=ibegin; i<ibottom; i++)
-          D->upJ[start+i]=field[i][nySub+jstart+n].J3;
-        start+=ibottom;
-      }
+      for(j=0; j<3; j++)
+        for(k=0; k<nzSub+5; k++)
+        {
+          for(i=ibegin; i<ibottom; i++)
+            D->upJ[start+i]=D->Jx[i][jend+j][k];
+          start+=ibottom;
+          for(i=ibegin; i<ibottom; i++)
+            D->upJ[start+i]=D->Jy[i][jend+j][k];
+          start+=ibottom;
+          for(i=ibegin; i<ibottom; i++)
+            D->upJ[start+i]=D->Jz[i][jend+j][k];
+          start+=ibottom;
+        }
         
       MPI_Send(D->upJ,numberData, MPI_DOUBLE, myrank+1, myrank, MPI_COMM_WORLD);             
     }
@@ -125,51 +131,51 @@ void MPI_TransferJ_DSX_Yplus(Domain *D)
     MPI_Barrier(MPI_COMM_WORLD);
 
     //Transferring odd ~ even cores             
-    if(myrank%2==0 && myrank!=0)
+    if(rank%2==0 && rank!=0)
     {
        MPI_Recv(D->upJ,numberData, MPI_DOUBLE, myrank-1, myrank-1, MPI_COMM_WORLD,&status);  
        start=0;
-       for(n=0; n<3; n++)
-       {
-         for(i=ibegin; i<ibottom; i++)
-           field[i][jstart+n].J1+=D->upJ[i+start];
-         start+=ibottom;
-         for(i=ibegin; i<ibottom; i++)
-           field[i][jstart+n].J2+=D->upJ[i+start];
-         start+=ibottom;
-         for(i=ibegin; i<ibottom; i++)
-           field[i][jstart+n].J3+=D->upJ[i+start];
-         start+=ibottom;
-       }
+       for(j=0; j<3; j++)
+         for(k=0; k<nzSub+5; k++)
+         {
+           for(i=ibegin; i<ibottom; i++)
+             D->Jx[i][jstart+j][k]+=D->upJ[i+start];
+           start+=ibottom;
+           for(i=ibegin; i<ibottom; i++)
+             D->Jy[i][jstart+j][k]+=D->upJ[i+start];
+           start+=ibottom;
+           for(i=ibegin; i<ibottom; i++)
+             D->Jz[i][jstart+j][k]+=D->upJ[i+start];
+           start+=ibottom;
+         }
     }
-    else if(myrank%2==1 && myrank!=nTasks-1)
+    else if(rank%2==1 && rank!=D->M-1)
     {
       start=0; 
-      for(n=0; n<3; n++)
-      {
-        for(i=ibegin; i<ibottom; i++)
-          D->upJ[start+i]=field[i][nySub+jstart+n].J1;
-        start+=ibottom;
-        for(i=ibegin; i<ibottom; i++)
-          D->upJ[start+i]=field[i][nySub+jstart+n].J2;
-        start+=ibottom;
-        for(i=ibegin; i<ibottom; i++)
-          D->upJ[start+i]=field[i][nySub+jstart+n].J3;
-        start+=ibottom;
-      }        
+      for(j=0; j<3; j++)
+        for(k=0; k<nzSub+5; k++)
+        {
+          for(i=ibegin; i<ibottom; i++)
+            D->upJ[start+i]=D->Jx[i][jend+j][k];
+          start+=ibottom;
+          for(i=ibegin; i<ibottom; i++)
+            D->upJ[start+i]=D->Jy[i][jend+j][k];
+          start+=ibottom;
+          for(i=ibegin; i<ibottom; i++)
+            D->upJ[start+i]=D->Jz[i][jend+j][k];
+          start+=ibottom;
+        }        
       MPI_Send(D->upJ,numberData, MPI_DOUBLE, myrank+1, myrank, MPI_COMM_WORLD);             
     }     
     MPI_Barrier(MPI_COMM_WORLD);        
 }
-*/
-/*
+
+
 void MPI_TransferJ_DSX_Yminus(Domain *D)
 {
-    int i,n,numberData,start,end,nx,nySub,ibegin,ibottom;
-    int istart,iend,jstart,jend;
-    int myrank, nTasks; 
-    FieldDSX **field;
-    field=D->fieldDSX;
+    int i,j,k,numberData,start,end,nx,nySub,nzSub,ibegin,ibottom;
+    int istart,iend,jstart,jend,kstart,kend;
+    int myrank, nTasks, rank; 
 
     MPI_Status status;         
    
@@ -178,7 +184,9 @@ void MPI_TransferJ_DSX_Yminus(Domain *D)
 
     nx=D->nx;
     nySub=D->nySub;
-    numberData=8*(nx+5);
+    nzSub=D->nzSub;
+    //first 2 is 3rd interpolation, 2nd 3 is Jx,Jy,Jz.
+    numberData=2*3*(nx+5)*(nzSub+5);
     ibegin=0;
     ibottom=nx+5;
 
@@ -186,62 +194,46 @@ void MPI_TransferJ_DSX_Yminus(Domain *D)
     iend=D->iend;
     jstart=D->jstart;
     jend=D->jend;
+    kstart=D->kstart;
+    kend=D->kend;
+
+    rank=myrank%D->M;
 
     //Transferring even ~ odd cores 
-    if(myrank%2==1 && myrank!=nTasks-1)
+    if(rank%2==1 && rank!=D->M-1)
     {
        MPI_Recv(D->btJ,numberData, MPI_DOUBLE, myrank+1, myrank+1, MPI_COMM_WORLD,&status);  
        start=0;
-       for(i=ibegin; i<ibottom; i++)
-         field[i][nySub].J1+=D->btJ[i+start];
-       start+=ibottom;
-       for(i=ibegin; i<ibottom; i++)
-         field[i][nySub].J2+=D->btJ[i+start];
-       start+=ibottom;
-       for(i=ibegin; i<ibottom; i++)
-         field[i][nySub].J3+=D->btJ[i+start];
-       start+=ibottom;
-       for(i=ibegin; i<ibottom; i++)
-         field[i][nySub+1].J1+=D->btJ[i+start];
-       start+=ibottom;
-       for(i=ibegin; i<ibottom; i++)
-         field[i][nySub+1].J2+=D->btJ[i+start];
-       start+=ibottom;
-       for(i=ibegin; i<ibottom; i++)
-         field[i][nySub+1].J3+=D->btJ[i+start];
-       start+=ibottom;
-       for(i=ibegin; i<ibottom; i++)
-         field[i][nySub+2].J3=D->btJ[i+start];
-       start+=ibottom;
-       for(i=ibegin; i<ibottom; i++)
-         field[i][nySub+2].J3Old=D->btJ[i+start];
+       for(j=1; j<3; j++)
+         for(k=0; k<nzSub+5; k++)
+         {
+           for(i=ibegin; i<ibottom; i++)
+             D->Jx[i][jend-j][k]+=D->btJ[i+start];
+           start+=ibottom;
+           for(i=ibegin; i<ibottom; i++)
+             D->Jy[i][jend-j][k]+=D->btJ[i+start];
+           start+=ibottom;
+           for(i=ibegin; i<ibottom; i++)
+             D->Jz[i][jend-j][k]+=D->btJ[i+start];
+           start+=ibottom;
+         }
     }
-    else if(myrank%2==0 && myrank!=0)
+    else if(rank%2==0 && rank!=0)
     {
       start=0; 
-      for(i=ibegin; i<ibottom; i++)
-        D->btJ[start+i]=field[i][0].J1;
-      start+=ibottom;
-      for(i=ibegin; i<ibottom; i++)
-        D->btJ[start+i]=field[i][0].J2;
-      start+=ibottom;
-      for(i=ibegin; i<ibottom; i++)
-        D->btJ[start+i]=field[i][0].J3;
-      start+=ibottom;
-      for(i=ibegin; i<ibottom; i++)
-        D->btJ[start+i]=field[i][1].J1;
-      start+=ibottom;
-      for(i=ibegin; i<ibottom; i++)
-        D->btJ[start+i]=field[i][1].J2;
-      start+=ibottom;
-      for(i=ibegin; i<ibottom; i++)
-        D->btJ[start+i]=field[i][1].J3;
-      start+=ibottom;
-      for(i=ibegin; i<ibottom; i++)
-        D->btJ[start+i]=field[i][2].J3;
-      start+=ibottom;
-      for(i=ibegin; i<ibottom; i++)
-        D->btJ[start+i]=field[i][2].J3Old;
+      for(j=1; j<3; j++)
+        for(k=0; k<nzSub+5; k++)
+        {
+          for(i=ibegin; i<ibottom; i++)
+            D->btJ[start+i]=D->Jx[i][jstart-j][k];
+          start+=ibottom;
+          for(i=ibegin; i<ibottom; i++)
+            D->btJ[start+i]=D->Jy[i][jstart-j][k];
+          start+=ibottom;
+          for(i=ibegin; i<ibottom; i++)
+            D->btJ[start+i]=D->Jz[i][jstart-j][k];
+          start+=ibottom;
+        }
         
       MPI_Send(D->btJ,numberData, MPI_DOUBLE, myrank-1, myrank, MPI_COMM_WORLD);             
     }
@@ -249,67 +241,46 @@ void MPI_TransferJ_DSX_Yminus(Domain *D)
     MPI_Barrier(MPI_COMM_WORLD);
 
     //Transferring odd ~ even cores             
-    if(myrank%2==0 && myrank!=nTasks-1)
+    if(rank%2==0 && rank!=D->M-1)
     {
        MPI_Recv(D->btJ,numberData, MPI_DOUBLE, myrank+1, myrank+1, MPI_COMM_WORLD,&status);  
        start=0;
-       for(i=ibegin; i<ibottom; i++)
-         field[i][nySub].J1+=D->btJ[i+start];
-       start+=ibottom;
-       for(i=ibegin; i<ibottom; i++)
-         field[i][nySub].J2+=D->btJ[i+start];
-       start+=ibottom;
-       for(i=ibegin; i<ibottom; i++)
-         field[i][nySub].J3+=D->btJ[i+start];
-       start+=ibottom;
-       for(i=ibegin; i<ibottom; i++)
-         field[i][nySub+1].J1+=D->btJ[i+start];
-       start+=ibottom;
-       for(i=ibegin; i<ibottom; i++)
-         field[i][nySub+1].J2+=D->btJ[i+start];
-       start+=ibottom;
-       for(i=ibegin; i<ibottom; i++)
-         field[i][nySub+1].J3+=D->btJ[i+start];
-       start+=ibottom;
-       for(i=ibegin; i<ibottom; i++)
-         field[i][nySub+2].J3=D->btJ[i+start];
-       start+=ibottom;
-       for(i=ibegin; i<ibottom; i++)
-         field[i][nySub+2].J3Old=D->btJ[i+start];
+       for(j=1; j<3; j++)
+         for(k=0; k<nzSub+5; k++)
+         {
+           for(i=ibegin; i<ibottom; i++)
+             D->Jx[i][jend-j][k]+=D->btJ[i+start];
+           start+=ibottom;
+           for(i=ibegin; i<ibottom; i++)
+             D->Jy[i][jend-j][k]+=D->btJ[i+start];
+           start+=ibottom;
+           for(i=ibegin; i<ibottom; i++)
+             D->Jz[i][jend-j][k]+=D->btJ[i+start];
+           start+=ibottom;
+         }
     }
-    else if(myrank%2==1)
+    else if(rank%2==1)
     {
       start=0; 
-      for(i=ibegin; i<ibottom; i++)
-        D->btJ[start+i]=field[i][0].J1;
-      start+=ibottom;
-      for(i=ibegin; i<ibottom; i++)
-        D->btJ[start+i]=field[i][0].J2;
-      start+=ibottom;
-      for(i=ibegin; i<ibottom; i++)
-        D->btJ[start+i]=field[i][0].J3;
-      start+=ibottom;
-      for(i=ibegin; i<ibottom; i++)
-        D->btJ[start+i]=field[i][1].J1;
-      start+=ibottom;
-      for(i=ibegin; i<ibottom; i++)
-        D->btJ[start+i]=field[i][1].J2;
-      start+=ibottom;
-      for(i=ibegin; i<ibottom; i++)
-        D->btJ[start+i]=field[i][1].J3;
-      start+=ibottom;
-      for(i=ibegin; i<ibottom; i++)
-        D->btJ[start+i]=field[i][2].J3;
-      start+=ibottom;
-      for(i=ibegin; i<ibottom; i++)
-        D->btJ[start+i]=field[i][2].J3Old;
+      for(j=1; j<3; j++)
+        for(k=0; k<nzSub+5; k++)
+        {
+          for(i=ibegin; i<ibottom; i++)
+            D->btJ[start+i]=D->Jx[i][jstart-j][k];
+          start+=ibottom;
+          for(i=ibegin; i<ibottom; i++)
+            D->btJ[start+i]=D->Jy[i][jstart-j][k];
+          start+=ibottom;
+          for(i=ibegin; i<ibottom; i++)
+            D->btJ[start+i]=D->Jz[i][jstart-j][k];
+          start+=ibottom;
+        }
         
       MPI_Send(D->btJ,numberData, MPI_DOUBLE, myrank-1, myrank, MPI_COMM_WORLD);             
     }
      
     MPI_Barrier(MPI_COMM_WORLD);
 }
-*/
 
 void MPI_TransferF_DSX_Yminus(Domain *D,float ***f1,float ***f2,float ***f3)
 {

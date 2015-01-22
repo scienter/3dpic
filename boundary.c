@@ -120,9 +120,9 @@ printf("rank=%d, minXSub=%d,maxSub=%d,minYSub=%d,maxYSub=%d,minZSub=%d,maxZSub=%
        D->Jx=memoryAsign(nxSub1D,nySub2D,nzSub3D);
        D->Jy=memoryAsign(nxSub1D,nySub2D,nzSub3D);
        D->Jz=memoryAsign(nxSub1D,nySub2D,nzSub3D);
-       D->JxC=memoryAsign(nxSub1D,nySub2D,nzSub3D);
-       D->JyC=memoryAsign(nxSub1D,nySub2D,nzSub3D);
-       D->JzC=memoryAsign(nxSub1D,nySub2D,nzSub3D);
+       D->JxOld=memoryAsign(nxSub1D,nySub2D,nzSub3D);
+       D->JyOld=memoryAsign(nxSub1D,nySub2D,nzSub3D);
+       D->JzOld=memoryAsign(nxSub1D,nySub2D,nzSub3D);
      }
 
      // Particle setting
@@ -162,10 +162,10 @@ printf("rank=%d, minXSub=%d,maxSub=%d,minYSub=%d,maxYSub=%d,minZSub=%d,maxZSub=%
          }
    
     // current J trasffering boundary
-//    numdataUp=(D->nx+5)*3*3;            
-//    numdataBt=(D->nx+5)*8;            
-//    D->upJ=(double *)malloc(numdataUp*sizeof(double ));
-//    D->btJ=(double *)malloc(numdataBt*sizeof(double ));
+    numberData=3*3*(D->nx+5)*(D->nzSub+5);
+    D->upJ=(double *)malloc(numberData*sizeof(double ));
+    numberData=2*3*(D->nx+5)*(D->nzSub+5);
+    D->btJ=(double *)malloc(numberData*sizeof(double ));
 
      D->probe = (Probe **)malloc(D->probeNum*sizeof(Probe *));
      for(i=0; i<D->probeNum; i++)
