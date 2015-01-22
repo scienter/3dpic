@@ -218,9 +218,14 @@ int main(int argc, char *argv[])
           if(D.M>1)
           {
             MPI_TransferP_Yminus(&D);
-//          MPI_TransferP_Yplus(&D);
+            MPI_TransferP_Yplus(&D);
           }
-//          removeEdge2D(&D);
+          if(D.N>1)
+          {
+//            MPI_TransferP_Zminus(&D);
+//            MPI_TransferP_Zplus(&D);
+          }
+          removeEdge3D(&D);
        }
 
        //time update
