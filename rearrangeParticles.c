@@ -11,7 +11,7 @@ void rearrangeParticles3D(Domain *D)
     Particle ***particle;
     particle=D->particle;
 
-    int i,j,k,s,intX=0,intY=0,intZ,cnt,deleteFlag=0;
+    int i,j,k,s,intX=0,intY=0,intZ=0,cnt,deleteFlag=0;
     int istart,iend,jstart,jend,kstart,kend;
     float x,y,z;
     ptclList *p,*New,*prev,*tmp;

@@ -114,7 +114,7 @@ void particlePush3D(Domain *D)
              p->x+=shiftX;
              p->oldY=j+p->y;
              p->y+=shiftY;
-             p->oldZ=j+p->z;
+             p->oldZ=k+p->z;
              p->z+=shiftZ;
              p=p->next;
           }		//End of while(p)

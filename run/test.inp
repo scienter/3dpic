@@ -12,7 +12,7 @@
  CurrentType=1
  FieldType=1
 
- maxStep=300
+ maxStep=500
  saveStep=50
  saveStart=0
  dumpSave=0
@@ -21,7 +21,7 @@
  moving=0
 
  minX=0
- maxX=20e-6
+ maxX=50e-6
  minY=0
  maxY=40e-6
  minZ=0
@@ -42,7 +42,7 @@
  pmlCell=10
 
  L=1
- M=2
+ M=4
  N=1
 
 [Laser]
@@ -68,7 +68,7 @@
 [Plasma]
  species=Electron
  type=Polygon
- density=1e22
+ density=1e25
  numberInCell=1
  startIndex=0		//The starting particle index
  velocityX=0.0
@@ -79,8 +79,8 @@
  Xnodes=4
  X0=2e-6
  X1=3e-6
- X2=18e-6
- X3=19e-6
+ X2=48e-6
+ X3=49e-6
  Xn0=0
  Xn1=1
  Xn2=1

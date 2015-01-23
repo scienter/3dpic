@@ -90,6 +90,21 @@ void MPI_TransferJ_DSX_Yplus(Domain *D)
     rank=myrank%D->M;
 
     //Transferring even ~ odd cores 
+    start=0; 
+    for(j=0; j<3; j++)
+      for(k=0; k<nzSub+5; k++)
+      {
+        for(i=ibegin; i<ibottom; i++)
+          D->upJ[start+i]=D->Jx[i][jend+j][k];
+        start+=ibottom;
+        for(i=ibegin; i<ibottom; i++)
+          D->upJ[start+i]=D->Jy[i][jend+j][k];
+        start+=ibottom;
+        for(i=ibegin; i<ibottom; i++)
+          D->upJ[start+i]=D->Jz[i][jend+j][k];
+        start+=ibottom;
+      }
+        
     if(rank%2==1)
     {
        MPI_Recv(D->upJ,numberData, MPI_DOUBLE, myrank-1, myrank-1, MPI_COMM_WORLD,&status);  
@@ -110,27 +125,26 @@ void MPI_TransferJ_DSX_Yplus(Domain *D)
     }
     else if(rank%2==0 && rank!=D->M-1)
     {
-      start=0; 
-      for(j=0; j<3; j++)
-        for(k=0; k<nzSub+5; k++)
-        {
-          for(i=ibegin; i<ibottom; i++)
-            D->upJ[start+i]=D->Jx[i][jend+j][k];
-          start+=ibottom;
-          for(i=ibegin; i<ibottom; i++)
-            D->upJ[start+i]=D->Jy[i][jend+j][k];
-          start+=ibottom;
-          for(i=ibegin; i<ibottom; i++)
-            D->upJ[start+i]=D->Jz[i][jend+j][k];
-          start+=ibottom;
-        }
-        
       MPI_Send(D->upJ,numberData, MPI_DOUBLE, myrank+1, myrank, MPI_COMM_WORLD);             
     }
      
     MPI_Barrier(MPI_COMM_WORLD);
 
     //Transferring odd ~ even cores             
+    start=0; 
+    for(j=0; j<3; j++)
+      for(k=0; k<nzSub+5; k++)
+      {
+        for(i=ibegin; i<ibottom; i++)
+          D->upJ[start+i]=D->Jx[i][jend+j][k];
+        start+=ibottom;
+        for(i=ibegin; i<ibottom; i++)
+          D->upJ[start+i]=D->Jy[i][jend+j][k];
+        start+=ibottom;
+        for(i=ibegin; i<ibottom; i++)
+          D->upJ[start+i]=D->Jz[i][jend+j][k];
+        start+=ibottom;
+      }        
     if(rank%2==0 && rank!=0)
     {
        MPI_Recv(D->upJ,numberData, MPI_DOUBLE, myrank-1, myrank-1, MPI_COMM_WORLD,&status);  
@@ -151,20 +165,6 @@ void MPI_TransferJ_DSX_Yplus(Domain *D)
     }
     else if(rank%2==1 && rank!=D->M-1)
     {
-      start=0; 
-      for(j=0; j<3; j++)
-        for(k=0; k<nzSub+5; k++)
-        {
-          for(i=ibegin; i<ibottom; i++)
-            D->upJ[start+i]=D->Jx[i][jend+j][k];
-          start+=ibottom;
-          for(i=ibegin; i<ibottom; i++)
-            D->upJ[start+i]=D->Jy[i][jend+j][k];
-          start+=ibottom;
-          for(i=ibegin; i<ibottom; i++)
-            D->upJ[start+i]=D->Jz[i][jend+j][k];
-          start+=ibottom;
-        }        
       MPI_Send(D->upJ,numberData, MPI_DOUBLE, myrank+1, myrank, MPI_COMM_WORLD);             
     }     
     MPI_Barrier(MPI_COMM_WORLD);        
@@ -200,6 +200,20 @@ void MPI_TransferJ_DSX_Yminus(Domain *D)
     rank=myrank%D->M;
 
     //Transferring even ~ odd cores 
+    start=0; 
+    for(j=1; j<3; j++)
+      for(k=0; k<nzSub+5; k++)
+      {
+        for(i=ibegin; i<ibottom; i++)
+          D->btJ[start+i]=D->Jx[i][jstart-j][k];
+        start+=ibottom;
+        for(i=ibegin; i<ibottom; i++)
+          D->btJ[start+i]=D->Jy[i][jstart-j][k];
+        start+=ibottom;
+        for(i=ibegin; i<ibottom; i++)
+          D->btJ[start+i]=D->Jz[i][jstart-j][k];
+        start+=ibottom;
+      }
     if(rank%2==1 && rank!=D->M-1)
     {
        MPI_Recv(D->btJ,numberData, MPI_DOUBLE, myrank+1, myrank+1, MPI_COMM_WORLD,&status);  
@@ -220,20 +234,6 @@ void MPI_TransferJ_DSX_Yminus(Domain *D)
     }
     else if(rank%2==0 && rank!=0)
     {
-      start=0; 
-      for(j=1; j<3; j++)
-        for(k=0; k<nzSub+5; k++)
-        {
-          for(i=ibegin; i<ibottom; i++)
-            D->btJ[start+i]=D->Jx[i][jstart-j][k];
-          start+=ibottom;
-          for(i=ibegin; i<ibottom; i++)
-            D->btJ[start+i]=D->Jy[i][jstart-j][k];
-          start+=ibottom;
-          for(i=ibegin; i<ibottom; i++)
-            D->btJ[start+i]=D->Jz[i][jstart-j][k];
-          start+=ibottom;
-        }
         
       MPI_Send(D->btJ,numberData, MPI_DOUBLE, myrank-1, myrank, MPI_COMM_WORLD);             
     }
@@ -241,6 +241,21 @@ void MPI_TransferJ_DSX_Yminus(Domain *D)
     MPI_Barrier(MPI_COMM_WORLD);
 
     //Transferring odd ~ even cores             
+    start=0; 
+    for(j=1; j<3; j++)
+      for(k=0; k<nzSub+5; k++)
+      {
+        for(i=ibegin; i<ibottom; i++)
+          D->btJ[start+i]=D->Jx[i][jstart-j][k];
+        start+=ibottom;
+        for(i=ibegin; i<ibottom; i++)
+          D->btJ[start+i]=D->Jy[i][jstart-j][k];
+        start+=ibottom;
+        for(i=ibegin; i<ibottom; i++)
+          D->btJ[start+i]=D->Jz[i][jstart-j][k];
+        start+=ibottom;
+      }
+        
     if(rank%2==0 && rank!=D->M-1)
     {
        MPI_Recv(D->btJ,numberData, MPI_DOUBLE, myrank+1, myrank+1, MPI_COMM_WORLD,&status);  
@@ -261,21 +276,6 @@ void MPI_TransferJ_DSX_Yminus(Domain *D)
     }
     else if(rank%2==1)
     {
-      start=0; 
-      for(j=1; j<3; j++)
-        for(k=0; k<nzSub+5; k++)
-        {
-          for(i=ibegin; i<ibottom; i++)
-            D->btJ[start+i]=D->Jx[i][jstart-j][k];
-          start+=ibottom;
-          for(i=ibegin; i<ibottom; i++)
-            D->btJ[start+i]=D->Jy[i][jstart-j][k];
-          start+=ibottom;
-          for(i=ibegin; i<ibottom; i++)
-            D->btJ[start+i]=D->Jz[i][jstart-j][k];
-          start+=ibottom;
-        }
-        
       MPI_Send(D->btJ,numberData, MPI_DOUBLE, myrank-1, myrank, MPI_COMM_WORLD);             
     }
      

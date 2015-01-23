@@ -183,7 +183,6 @@ int main(int argc, char *argv[])
 
        if(D.fieldType==1)
        {
-
          if(D.currentType==1)
            updateCurrent3D_DSX_1st(&D);
 //         else if(D.currentType==2)

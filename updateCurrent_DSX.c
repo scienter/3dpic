@@ -441,12 +441,11 @@ void updateCurrent2D_DSX_2nd(Domain *D)
 
 void updateCurrent3D_DSX_1st(Domain *D)
 {
-    int i,j,k,s,n,i1,i2,j1,j2,k1,k2,intXc,intYc,intZc;
+    int i,j,k,s,i1,i2,j1,j2,k1,k2;
     int istart,iend,jstart,jend,kstart,kend;
     int nxSub,nySub,nzSub;
     double inverDt,x1,x2,y1,y2,xr,yr,zr,z1,z2;
     double Fx1,Fx2,Wx1,Wx2,Fy1,Fy2,Wy1,Wy2,Fz1,Fz2,Wz1,Wz2,dx,dy,dz,dt;
-    double vz,gamma,xc,yc,zc,wx,wy,wz,xcc,ycc,zcc;
     ptclList *p;
     LoadList *LL;   
     Particle ***particle;
@@ -512,13 +511,13 @@ void updateCurrent3D_DSX_1st(Domain *D)
          
             while(p) 
             {
-              gamma=sqrt(1.0+p->p1*p->p1+p->p2*p->p2+p->p3*p->p3);
-              vz=p->p3/gamma;
+//              gamma=sqrt(1.0+p->p1*p->p1+p->p2*p->p2+p->p3*p->p3);
+//              vz=p->p3/gamma;
               x2=p->x+i;       y2=p->y+j;       z2=p->z+k;
               x1=p->oldX;      y1=p->oldY;      z1=p->oldZ;
-              xc=0.5*(x1+x2);  yc=0.5*(y1+y2);  zc=0.5*(z1+z2);
-              intXc=(int)xc;   intYc=(int)yc;   intZc=(int)zc;
-              xcc=xc-intXc;    ycc=yc-intYc;    zcc=zc-intZc;
+//              xc=0.5*(x1+x2);  yc=0.5*(y1+y2);  zc=0.5*(z1+z2);
+//              intXc=(int)xc;   intYc=(int)yc;   intZc=(int)zc;
+//              xcc=xc-intXc;    ycc=yc-intYc;    zcc=zc-intZc;
               i1=(int)x1;      j1=(int)y1;      k1=(int)z1;
               i2=(int)x2;      j2=(int)y2;      k2=(int)z2;
               if(i1==i2) 
@@ -560,18 +559,18 @@ void updateCurrent3D_DSX_1st(Domain *D)
               D->Jz[i1][j1+1][k1]  +=Fz1*(1-Wx1)*    Wy1*coeff[s];
               D->Jz[i1+1][j1+1][k1]+=Fz1*    Wx1*    Wy1*coeff[s];
 
-              D->Jx[i2][j2][k2]    +=Fx1*(1-Wy1)*(1-Wz1)*coeff[s];
-              D->Jx[i2][j2+1][k2]  +=Fx1*    Wy1*(1-Wz1)*coeff[s];
-              D->Jx[i2][j2][k2+1]  +=Fx1*(1-Wy1)*    Wz1*coeff[s];
-              D->Jx[i2][j2+1][k2+1]+=Fx1*    Wy1*    Wz1*coeff[s];
-              D->Jy[i2][j2][k2]    +=Fy1*(1-Wx1)*(1-Wz1)*coeff[s];
-              D->Jy[i2+1][j2][k2]  +=Fy1*    Wx1*(1-Wz1)*coeff[s];
-              D->Jy[i2][j2][k2+1]  +=Fy1*(1-Wx1)*    Wz1*coeff[s];
-              D->Jy[i2+1][j2][k2+1]+=Fy1*    Wx1*    Wz1*coeff[s];
-              D->Jz[i2][j2][k2]    +=Fz1*(1-Wx1)*(1-Wy1)*coeff[s];
-              D->Jz[i2+1][j2][k2]  +=Fz1*    Wx1*(1-Wy1)*coeff[s];
-              D->Jz[i2][j2+1][k2]  +=Fz1*(1-Wx1)*    Wy1*coeff[s];
-              D->Jz[i2+1][j2+1][k2]+=Fz1*    Wx1*    Wy1*coeff[s];
+              D->Jx[i2][j2][k2]    +=Fx2*(1-Wy2)*(1-Wz2)*coeff[s];
+              D->Jx[i2][j2+1][k2]  +=Fx2*    Wy2*(1-Wz2)*coeff[s];
+              D->Jx[i2][j2][k2+1]  +=Fx2*(1-Wy2)*    Wz2*coeff[s];
+              D->Jx[i2][j2+1][k2+1]+=Fx2*    Wy2*    Wz2*coeff[s];
+              D->Jy[i2][j2][k2]    +=Fy2*(1-Wx2)*(1-Wz2)*coeff[s];
+              D->Jy[i2+1][j2][k2]  +=Fy2*    Wx2*(1-Wz2)*coeff[s];
+              D->Jy[i2][j2][k2+1]  +=Fy2*(1-Wx2)*    Wz2*coeff[s];
+              D->Jy[i2+1][j2][k2+1]+=Fy2*    Wx2*    Wz2*coeff[s];
+              D->Jz[i2][j2][k2]    +=Fz2*(1-Wx2)*(1-Wy2)*coeff[s];
+              D->Jz[i2+1][j2][k2]  +=Fz2*    Wx2*(1-Wy2)*coeff[s];
+              D->Jz[i2][j2+1][k2]  +=Fz2*(1-Wx2)*    Wy2*coeff[s];
+              D->Jz[i2+1][j2+1][k2]+=Fz2*    Wx2*    Wy2*coeff[s];
 
               p=p->next;
             }	//End of while(p)
