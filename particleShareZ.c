@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include "mesh.h"
 #include <mpi.h>
-/*
-void MPI_TransferP_Yplus(Domain *D)
+
+void MPI_TransferP_Zplus(Domain *D)
 {
    int i,j,k,n,s,numP,cnt,totalData,sendData=11,nxSub,nySub,nzSub;
    int istart,iend,jstart,jend,kstart,kend;
@@ -28,47 +28,47 @@ void MPI_TransferP_Yplus(Domain *D)
    kstart=D->kstart;
    kend=D->kend;
 
-   rank=myrank%D->M;
+   rank=(int)(myrank/D->M);
 
     //Even -> odd
-    if(rank%2==0 && rank!=D->M-1)
+    if(rank%2==0 && rank!=D->N-1)
     {
       numP=0;
       for(s=0; s<D->nSpecies; s++)
         for(i=istart-1; i<=iend; i++)
-          for(k=kstart-1; k<=kend; k++)
+          for(j=jstart-1; j<=jend; j++)
           {
-            p=particle[i][jend][k].head[s]->pt;
+            p=particle[i][j][kend].head[s]->pt;
             while(p)   {
               p=p->next;
               numP++;
             } 
           }
-      MPI_Send(&numP,1, MPI_INT, myrank+1, myrank, MPI_COMM_WORLD);    
+      MPI_Send(&numP,1, MPI_INT, myrank+D->M, myrank, MPI_COMM_WORLD);    
     }    
     else if(rank%2==1) 
-      MPI_Recv(&numP,1, MPI_INT, myrank-1, myrank-1, MPI_COMM_WORLD,&status);      
+      MPI_Recv(&numP,1, MPI_INT, myrank-D->M, myrank-D->M, MPI_COMM_WORLD,&status);      
     MPI_Barrier(MPI_COMM_WORLD);    
 
     totalData=numP*sendData;
     upP=(float *)malloc(totalData*sizeof(float ));             
 
-    if(rank%2==0 && rank!=D->M-1)
+    if(rank%2==0 && rank!=D->N-1)
     {    
       n=0;
       for(s=0; s<D->nSpecies; s++)
         for(i=istart-1; i<=iend; i++)
-          for(k=kstart-1; k<=kend; k++)
+          for(j=jstart-1; j<=jend; j++)
           {
-            p=particle[i][jend][k].head[s]->pt;
+            p=particle[i][j][kend].head[s]->pt;
             while(p)   
             {
               upP[n*sendData+0]=p->x+i;     
               upP[n*sendData+1]=p->oldX;  
-              upP[n*sendData+2]=p->y;  
-              upP[n*sendData+3]=p->oldY-nySub;  
-              upP[n*sendData+4]=p->z+k;  
-              upP[n*sendData+5]=p->oldZ;  
+              upP[n*sendData+2]=p->y+j;  
+              upP[n*sendData+3]=p->oldY;  
+              upP[n*sendData+4]=p->z;  
+              upP[n*sendData+5]=p->oldZ-nzSub;  
               upP[n*sendData+6]=p->p1;  
               upP[n*sendData+7]=p->p2;  
               upP[n*sendData+8]=p->p3;  
@@ -78,25 +78,25 @@ void MPI_TransferP_Yplus(Domain *D)
               n++;
             }
           }
-      MPI_Send(upP,totalData, MPI_FLOAT, myrank+1, myrank, MPI_COMM_WORLD); 
+      MPI_Send(upP,totalData, MPI_FLOAT, myrank+D->M, myrank, MPI_COMM_WORLD); 
     }
 
     else if(rank%2==1) 
     {    
-      MPI_Recv(upP,totalData, MPI_FLOAT, myrank-1, myrank-1, MPI_COMM_WORLD,&status);      
+      MPI_Recv(upP,totalData, MPI_FLOAT, myrank-D->M, myrank-D->M, MPI_COMM_WORLD,&status);      
       for(n=0; n<numP; n++)
       {
         i=(int)(upP[n*sendData+0]);
-        k=(int)(upP[n*sendData+4]);
+        j=(int)(upP[n*sendData+2]);
         s=(int)(upP[n*sendData+10]);
         New = (ptclList *)malloc(sizeof(ptclList)); 
-        New->next = particle[i][jstart][k].head[s]->pt;
-        particle[i][jstart][k].head[s]->pt = New;             
+        New->next = particle[i][j][kstart].head[s]->pt;
+        particle[i][j][kstart].head[s]->pt = New;             
         New->x=upP[n*sendData+0]-i;     
         New->oldX=upP[n*sendData+1];     
-        New->y=upP[n*sendData+2];     
+        New->y=upP[n*sendData+2]-j;     
         New->oldY=upP[n*sendData+3];     
-        New->z=upP[n*sendData+4]-k;     
+        New->z=upP[n*sendData+4];     
         New->oldZ=upP[n*sendData+5];     
         New->p1=upP[n*sendData+6];
         New->p2=upP[n*sendData+7];
@@ -108,44 +108,44 @@ void MPI_TransferP_Yplus(Domain *D)
     free(upP);
 
     //Odd -> evem
-    if(rank%2==1 && rank!=D->M-1)
+    if(rank%2==1 && rank!=D->N-1)
     {
       numP=0;
       for(s=0; s<D->nSpecies; s++)
         for(i=istart-1; i<=iend; i++)
-          for(k=kstart-1; k<=kend; k++)
+          for(j=jstart-1; j<=jend; j++)
           {
-            p=particle[i][jend][k].head[s]->pt;
+            p=particle[i][j][kend].head[s]->pt;
             while(p)   {
               p=p->next;
               numP++;
             }
           } 
-      MPI_Send(&numP,1, MPI_INT, myrank+1, myrank, MPI_COMM_WORLD);    
+      MPI_Send(&numP,1, MPI_INT, myrank+D->M, myrank, MPI_COMM_WORLD);    
     }
     else if(rank%2==0 && rank!=0) 
-      MPI_Recv(&numP,1, MPI_INT, myrank-1, myrank-1, MPI_COMM_WORLD,&status);      
+      MPI_Recv(&numP,1, MPI_INT, myrank-D->M, myrank-D->M, MPI_COMM_WORLD,&status);      
     MPI_Barrier(MPI_COMM_WORLD);    
 
     totalData=numP*sendData;
     upP=(float *)malloc(totalData*sizeof(float ));             
 
-    if(rank%2==1 && rank!=D->M-1)
+    if(rank%2==1 && rank!=D->N-1)
     {
       n=0;
       for(s=0; s<D->nSpecies; s++)
         for(i=istart-1; i<=iend; i++)
-          for(k=kstart-1; k<=kend; k++)
+          for(j=jstart-1; j<=jend; j++)
           {
-            p=particle[i][jend][k].head[s]->pt;
+            p=particle[i][j][kend].head[s]->pt;
             while(p)   
             {
               upP[n*sendData+0]=p->x+i;     
               upP[n*sendData+1]=p->oldX;  
-              upP[n*sendData+2]=p->y;  
-              upP[n*sendData+3]=p->oldY-nySub;  
-              upP[n*sendData+4]=p->z+k;     
-              upP[n*sendData+5]=p->oldZ;  
+              upP[n*sendData+2]=p->y+j;  
+              upP[n*sendData+3]=p->oldY;  
+              upP[n*sendData+4]=p->z;     
+              upP[n*sendData+5]=p->oldZ-nzSub;  
               upP[n*sendData+6]=p->p1;  
               upP[n*sendData+7]=p->p2;  
               upP[n*sendData+8]=p->p3;  
@@ -155,25 +155,25 @@ void MPI_TransferP_Yplus(Domain *D)
               n++;
             }
         }
-      MPI_Send(upP,totalData, MPI_FLOAT, myrank+1, myrank, MPI_COMM_WORLD); 
+      MPI_Send(upP,totalData, MPI_FLOAT, myrank+D->M, myrank, MPI_COMM_WORLD); 
     }
  
     else if(rank%2==0 && rank!=0) 
     {    
-      MPI_Recv(upP,totalData, MPI_FLOAT, myrank-1, myrank-1, MPI_COMM_WORLD,&status);      
+      MPI_Recv(upP,totalData, MPI_FLOAT, myrank-D->M, myrank-D->M, MPI_COMM_WORLD,&status);      
       for(n=0; n<numP; n++)
       {
         i=(int)(upP[n*sendData+0]);
-        k=(int)(upP[n*sendData+4]);
+        j=(int)(upP[n*sendData+2]);
         s=(int)(upP[n*sendData+10]);
         New = (ptclList *)malloc(sizeof(ptclList)); 
-        New->next = particle[i][jstart][k].head[s]->pt;
-        particle[i][jstart][k].head[s]->pt = New;             
+        New->next = particle[i][j][kstart].head[s]->pt;
+        particle[i][j][kstart].head[s]->pt = New;             
         New->x=upP[n*sendData+0]-i;     
         New->oldX=upP[n*sendData+1];     
-        New->y=upP[n*sendData+2];     
+        New->y=upP[n*sendData+2]-j;     
         New->oldY=upP[n*sendData+3];     
-        New->z=upP[n*sendData+4]-k;     
+        New->z=upP[n*sendData+4];     
         New->oldZ=upP[n*sendData+5];     
         New->p1=upP[n*sendData+6];
         New->p2=upP[n*sendData+7];
@@ -184,7 +184,7 @@ void MPI_TransferP_Yplus(Domain *D)
     MPI_Barrier(MPI_COMM_WORLD);
     free(upP);
 }
-*/
+
 
 void MPI_TransferP_Zminus(Domain *D)
 {
@@ -323,7 +323,7 @@ void MPI_TransferP_Zminus(Domain *D)
       n=0;
       for(s=0; s<D->nSpecies; s++)
         for(i=istart-1; i<=iend; i++)
-          for(j=jstart-1; j<=jend; k++)
+          for(j=jstart-1; j<=jend; j++)
           {
             p=particle[i][j][kstart-1].head[s]->pt;
             while(p)   

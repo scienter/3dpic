@@ -163,9 +163,13 @@ printf("rank=%d, minXSub=%d,maxSub=%d,minYSub=%d,maxYSub=%d,minZSub=%d,maxZSub=%
    
     // current J trasffering boundary
     numberData=3*3*(D->nx+5)*(D->nzSub+5);
-    D->upJ=(double *)malloc(numberData*sizeof(double ));
+    D->YplusJ=(double *)malloc(numberData*sizeof(double ));
     numberData=2*3*(D->nx+5)*(D->nzSub+5);
-    D->btJ=(double *)malloc(numberData*sizeof(double ));
+    D->YminusJ=(double *)malloc(numberData*sizeof(double ));
+    numberData=3*3*(D->nx+5)*(D->nySub+5);
+    D->ZplusJ=(double *)malloc(numberData*sizeof(double ));
+    numberData=2*3*(D->nx+5)*(D->nySub+5);
+    D->ZminusJ=(double *)malloc(numberData*sizeof(double ));
 
      D->probe = (Probe **)malloc(D->probeNum*sizeof(Probe *));
      for(i=0; i<D->probeNum; i++)
@@ -186,13 +190,22 @@ printf("rank=%d, minXSub=%d,maxSub=%d,minYSub=%d,maxYSub=%d,minZSub=%d,maxZSub=%
     case 1 :
     break;
     case 3 :
-      numberData=3*(D->nx+5)*(D->nzSub+5)*2;
+      numberData=3*(D->nx+5)*(D->nzSub+5)*1;
+      D->plusYC = (float *)malloc(numberData*sizeof(float ));
+      numberData=3*(D->nx+5)*(D->nzSub+5)*1;
+      D->minusYC = (float *)malloc(numberData*sizeof(float ));
+      numberData=3*(D->nx+5)*(D->nySub+5)*1;
+      D->plusZC = (float *)malloc(numberData*sizeof(float ));
+      numberData=3*(D->nx+5)*(D->nySub+5)*1;
+      D->minusZC = (float *)malloc(numberData*sizeof(float ));
+
+      numberData=6*(D->nx+5)*(D->nzSub+5)*2;
       D->plusY = (float *)malloc(numberData*sizeof(float ));
-      numberData=3*(D->nx+5)*(D->nzSub+5)*3;
+      numberData=6*(D->nx+5)*(D->nzSub+5)*3;
       D->minusY = (float *)malloc(numberData*sizeof(float ));
-      numberData=3*(D->nx+5)*(D->nySub+5)*2;
+      numberData=6*(D->nx+5)*(D->nySub+5)*2;
       D->plusZ = (float *)malloc(numberData*sizeof(float ));
-      numberData=3*(D->nx+5)*(D->nySub+5)*3;
+      numberData=6*(D->nx+5)*(D->nySub+5)*3;
       D->minusZ = (float *)malloc(numberData*sizeof(float ));
     break;
     }    

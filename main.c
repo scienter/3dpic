@@ -100,7 +100,7 @@ int main(int argc, char *argv[])
 
           if(D.fieldSave==1) { 
             saveField3D(&D,iteration);
-//            saveRaman2D(&D,iteration);
+            saveRaman3D(&D,iteration);
             if(myrank==0)
               printf("field%d is made.\n",iteration);  
           }
@@ -148,13 +148,13 @@ int main(int argc, char *argv[])
          solveField3DC_DSX(&D);
          if(D.M>1)
          {
-           MPI_TransferF_DSX_Yminus(&D,D.SrC,D.SlC,D.ExC);
-           MPI_TransferF_DSX_Yplus(&D,D.PrC,D.PlC,D.BxC);
+           MPI_TransferF_DSX_YminusC(&D,D.SrC,D.SlC,D.ExC);
+           MPI_TransferF_DSX_YplusC(&D,D.PrC,D.PlC,D.BxC);
          }
          if(D.N>1)
          {
-           MPI_TransferF_DSX_Zminus(&D,D.PrC,D.PlC,D.ExC);
-           MPI_TransferF_DSX_Zplus(&D,D.SrC,D.SlC,D.BxC);
+           MPI_TransferF_DSX_ZminusC(&D,D.PrC,D.PlC,D.ExC);
+           MPI_TransferF_DSX_ZplusC(&D,D.SrC,D.SlC,D.BxC);
          }
 //         if()  periodY1coreC(&D);   
 
@@ -162,20 +162,20 @@ int main(int argc, char *argv[])
          solveField3D_DSX(&D);
          if(D.M>1)
          {
-           MPI_TransferF_DSX_Yminus(&D,D.Sr,D.Sl,D.Ex);
-           MPI_TransferF_DSX_Yplus(&D,D.Pr,D.Pl,D.Bx);
+           MPI_TransferF_DSX_Yminus(&D,D.Sr,D.Sl,D.Ex,D.Pr,D.Pl,D.Bx);
+           MPI_TransferF_DSX_Yplus(&D,D.Pr,D.Pl,D.Bx,D.Sr,D.Sl,D.Ex);
          }
          if(D.N>1)
          {
-           MPI_TransferF_DSX_Zminus(&D,D.Pr,D.Pl,D.Ex);
-           MPI_TransferF_DSX_Zplus(&D,D.Sr,D.Sl,D.Bx);
+           MPI_TransferF_DSX_Zminus(&D,D.Pr,D.Pl,D.Ex,D.Sr,D.Sl,D.Bx);
+           MPI_TransferF_DSX_Zplus(&D,D.Sr,D.Sl,D.Bx,D.Pr,D.Pl,D.Ex);
          }
        }
 
        if(D.interpolationType==1)
          interpolation3D_1st(&D,&Ext);
-//       else if(D.interpolationType==2)
-//         interpolation2D_2nd(&D,&Ext);
+       else if(D.interpolationType==2)
+         interpolation3D_2nd(&D,&Ext);
 //       else if(D.currentType==3)
 //         interpolation2D_3rd(&D,&Ext);
 
@@ -193,6 +193,11 @@ int main(int argc, char *argv[])
            {
              MPI_TransferJ_DSX_Yplus(&D);
              MPI_TransferJ_DSX_Yminus(&D);
+           }
+           if(D.N>1)
+           {
+             MPI_TransferJ_DSX_Zplus(&D);
+             MPI_TransferJ_DSX_Zminus(&D);
            }
        }
 
@@ -223,8 +228,8 @@ int main(int argc, char *argv[])
           }
           if(D.N>1)
           {
-//            MPI_TransferP_Zminus(&D);
-//            MPI_TransferP_Zplus(&D);
+            MPI_TransferP_Zminus(&D);
+            MPI_TransferP_Zplus(&D);
           }
           removeEdge3D(&D);
        }

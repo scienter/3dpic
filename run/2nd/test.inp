@@ -9,6 +9,7 @@
 
 [Domain]
  Dimension=3
+ InterpolationType=2
  CurrentType=1
  FieldType=1
 
@@ -42,8 +43,8 @@
  pmlCell=10
 
  L=1
- M=4
- N=1
+ M=1
+ N=2
 
 [Laser]
  wavelength=1e-6

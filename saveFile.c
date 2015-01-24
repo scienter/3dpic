@@ -229,12 +229,11 @@ void saveField3D(Domain *D,int iteration)
     }
 }
 
-/*
-void saveRaman2D(Domain *D,int iteration)
+void saveRaman3D(Domain *D,int iteration)
 {
-    int i,j,istart,iend,jstart,jend;
+    int i,j,k,istart,iend,jstart,jend,kstart,kend;
     char name[100];
-    float x,y,Pr,Pl,Pu,Pd,Sr,Sl,Su,Sd;
+    float x,y,z,Pr,Pl,Sr,Sl,factor;
     FILE *out;
     int myrank, nprocs;    
     MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
@@ -243,33 +242,40 @@ void saveRaman2D(Domain *D,int iteration)
     iend=D->iend;
     jstart=D->jstart;
     jend=D->jend;
-    
+    kstart=D->kstart;
+    kend=D->kend;
+
     if(D->fieldType==1)
     {
-      FieldDSX **field;
-      field=D->fieldDSX;
-
       sprintf(name,"raman%d_%d",iteration,myrank);
       out = fopen(name,"w");
+      factor=D->gamma*(1+D->beta);
 
       for(i=istart; i<iend; i++)
       {
         for(j=jstart; j<jend; j++)
         {
-          x=(i-2+D->minXSub)*D->dx*D->lambda;
-          y=(j-2+D->minYSub)*D->dy*D->lambda;
-          Pr=field[i][j].Pr;
-          Pl=field[i][j].Pl;
-          Sr=field[i][j].Sr;
-          Sl=field[i][j].Sl;
-          fprintf(out,"%g %g %g %g %g %g\n",x,y,Pr,Pl,Sr,Sl);
+          for(k=kstart; k<kend; k++)
+          {
+            x=(i-2+D->minXSub)*D->dx*D->lambda;
+            y=(j-2+D->minYSub)*D->dy*D->lambda;
+            z=(k-2+D->minZSub)*D->dz*D->lambda;
+            Pr=D->Pr[i][j][k];
+            Pl=D->Pl[i][j][k];
+            Sr=D->Sr[i][j][k];    
+            Sl=D->Sl[i][j][k];
+            fprintf(out,"%g %g %g %g %g %g %g\n",x,y,z,Pr,Pl,Sr,Sl);
+//          fprintf(out,"%g %g %g %g %g %g %g %g\n",x,y,Ex,Ey,Ez,Bx,By,Bz);
+          }
+          fprintf(out,"\n");                 
         }
-        fprintf(out,"\n");
-      }             
+        fprintf(out,"\n");                 
+      }
       fclose(out);
     }
 }
-*/
+
+
 void saveParticle3D(Domain *D,int iteration)
 {
     int i,j,k,istart,iend,jstart,jend,kstart,kend,s;

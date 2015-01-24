@@ -58,8 +58,14 @@ typedef struct _Domain
    int nextCore;
    int prevCore;
    
-   double *upJ;
-   double *btJ;
+   double *YplusJ;
+   double *YminusJ;
+   double *ZplusJ;
+   double *ZminusJ;
+   float *minusYC;
+   float *plusYC;
+   float *minusZC;
+   float *plusZC;
    float *minusY;
    float *plusY;
    float *minusZ;
