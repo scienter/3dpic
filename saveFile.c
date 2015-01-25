@@ -60,13 +60,13 @@ void saveProbe(Domain *D,int iteration)
       }
     }
 }
-
-void saveRho2D(Domain *D,int iteration)
+*/
+void saveRho3D(Domain *D,int iteration)
 {
-    int i,j,istart,iend,jstart,jend,s;
-    float x,y,a00,a11,a01,a10;
+    int i,j,k,istart,iend,jstart,jend,kstart,kend,s,ii,jj,kk,i1,j1,k1;
+    float x,y,z,Wx[3],Wy[3],Wz[3];
     char name[100];
-    Particle **particle;
+    Particle ***particle;
     particle=D->particle;
     ptclList *p;
     LoadList *LL;
@@ -78,6 +78,8 @@ void saveRho2D(Domain *D,int iteration)
     iend=D->iend;
     jstart=D->jstart;
     jend=D->jend;
+    kstart=D->kstart;
+    kend=D->kend;
 
     float rho0[D->nSpecies];
     s=0;
@@ -90,31 +92,45 @@ void saveRho2D(Domain *D,int iteration)
     }
 
     //initializing density
-    for(i=istart; i<=iend; i++)
-      for(j=jstart; j<=jend; j++)
-        particle[i][j].rho=0.0;
+    for(i=0; i<=iend; i++)
+      for(j=jstart-1; j<=jend; j++)
+        for(k=kstart-1; k<=kend; k++)
+          particle[i][j][k].rho=0.0;
 
-    for(i=istart; i<iend; i++)
-      for(j=jstart; j<jend; j++)
+    for(i=istart+1; i<iend-1; i++)
+      for(j=jstart+1; j<jend-1; j++)
+        for(k=kstart+1; k<kend-1; k++)
 //        for(s=0; s<D->nSpecies; s++)
-        for(s=0; s<1; s++)
-        {
-          p=particle[i][j].head[s]->pt;
-          while(p)
+          for(s=0; s<1; s++)
           {
-            x=p->x;
-            y=p->y;
-            a00=(1-x)*(1-y);
-            a11=x*y;
-            a10=(1-x)*y;
-            a01=x*(1-y);
-            particle[i][j].rho+=a00*rho0[s];
-            particle[i+1][j+1].rho+=a11*rho0[s];
-            particle[i+1][j].rho+=a10*rho0[s];
-            particle[i][j+1].rho+=a01*rho0[s];
-            p=p->next;
+            p=particle[i][j][k].head[s]->pt;
+            while(p)
+            {
+              x=p->x; y=p->y; z=p->z;
+              i1=(int)(i+x+0.5);
+              j1=(int)(j+y+0.5);
+              k1=(int)(k+z+0.5);
+              x=i+x-i1;
+              y=j+y-j1;
+              z=k+z-k1;
+              Wx[0]=0.5*(0.5-x)*(0.5-x);
+              Wx[1]=0.75-x*x;
+              Wx[2]=0.5*(x+0.5)*(x+0.5);
+              Wy[0]=0.5*(0.5-y)*(0.5-y);
+              Wy[1]=0.75-y*y;
+              Wy[2]=0.5*(y+0.5)*(y+0.5);
+              Wz[0]=0.5*(0.5-z)*(0.5-z);
+              Wz[1]=0.75-z*z;
+              Wz[2]=0.5*(z+0.5)*(z+0.5);
+
+              for(kk=0; kk<3; kk++)
+                for(jj=0; jj<3; jj++)
+                  for(ii=0; ii<3; ii++)
+                    particle[i1-1+ii][j1-1+jj][k1-1+kk].rho
+                            +=Wx[ii]*Wy[jj]*Wz[kk]*rho0[s];
+              p=p->next;
+            }
           }
-        }
 
     sprintf(name,"rho%d_%d",iteration,myrank);
     out = fopen(name,"w");    
@@ -122,9 +138,14 @@ void saveRho2D(Domain *D,int iteration)
     {
       for(j=jstart; j<jend; j++)
       {
-        x=(i-istart+D->minXSub)*D->dx*D->lambda;
-        y=(j-jstart+D->minYSub)*D->dy*D->lambda;
-          fprintf(out,"%g %g %g\n",x,y,particle[i][j].rho);    
+        for(k=kstart; k<kend; k++)
+        {
+          x=(i-istart+D->minXSub)*D->dx*D->lambda;
+          y=(j-jstart+D->minYSub)*D->dy*D->lambda;
+          z=(k-kstart+D->minZSub)*D->dz*D->lambda;
+          fprintf(out,"%g %g %g %g\n",x,y,z,particle[i][j][k].rho);    
+        }           
+        fprintf(out,"\n");    
       }           
       fprintf(out,"\n");    
     }
@@ -132,7 +153,7 @@ void saveRho2D(Domain *D,int iteration)
 
 }
 
-
+/*
 void boostSaveField(Domain *D,int labSaveStep)
 {
     int i,j,istart,iend,jstart,jend,show;

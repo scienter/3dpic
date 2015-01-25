@@ -56,9 +56,9 @@ int main(int argc, char *argv[])
     //load plasma or load dump file
     if(argc >= 3)
     {   
-//      iteration = atoi(argv[2]);
-//      restoreData2D(&D,iteration);
-//      t=D.dt*iteration; 
+      iteration = atoi(argv[2]);
+      restoreData3D(&D,iteration);
+      t=D.dt*iteration; 
     }
     else 
     {
@@ -110,14 +110,14 @@ int main(int argc, char *argv[])
               printf("particle%d is made.\n",iteration);              
           }
           if(D.rhoSave==1) { 
-//            saveRho2D(&D,iteration);
-//            if(myrank==0)
-//              printf("rho%d is made.\n",iteration);              
+            saveRho3D(&D,iteration);
+            if(myrank==0)
+              printf("rho%d is made.\n",iteration);              
           }
           if(D.dumpSave==1 && iteration>=D.dumpStart) { 
-//            saveDump2D(D,iteration);
-//            if(myrank==0)
-//              printf("dump%d is made.\n",iteration);              
+            saveDump3D(D,iteration);
+            if(myrank==0)
+              printf("dump%d is made.\n",iteration);              
           }
 
           if(D.probeNum>0) { 
@@ -185,10 +185,10 @@ int main(int argc, char *argv[])
        {
          if(D.currentType==1)
            updateCurrent3D_DSX_1st(&D);
-//         else if(D.currentType==2)
-//           updateCurrent2D_DSX_2nd(&D);
-//         else if(D.currentType==3)
-//           updateCurrent2D_DSX_3rd(&D);
+         else if(D.currentType==2)
+           updateCurrent3D_DSX_2nd(&D);
+         else if(D.currentType==3)
+           updateCurrent3D_DSX_3rd(&D);
            if(D.M>1)
            {
              MPI_TransferJ_DSX_Yplus(&D);
@@ -254,7 +254,7 @@ int main(int argc, char *argv[])
     fprintf(out,"running time=%gm\n",time_spent/60.0);
     fclose(out);
 
-//    clean2D(&D);
+    clean3D(&D);
     
     MPI_Finalize();
 

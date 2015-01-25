@@ -55,9 +55,8 @@ typedef struct _Domain
    int L;
    int M;
    int N;
-   int nextCore;
-   int prevCore;
    
+   //sharing mesh
    double *YplusJ;
    double *YminusJ;
    double *ZplusJ;
@@ -90,15 +89,6 @@ typedef struct _Domain
    float ***JyOld;    
    float ***JzOld;    
 
-   //sharing mesh
-   float *Ufield;
-   float *Dfield;
-   float *Rfield;
-   float *Lfield;
-   int numShareR;
-   int numShareL;
-   int numShareU;
-   int numShareD;
    
    struct _UpPML **UpPML;    
    struct _DnPML **DnPML;    

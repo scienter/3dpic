@@ -95,13 +95,13 @@ void MPI_TransferJ_DSX_Zplus(Domain *D)
       for(j=0; j<nySub+5; j++)
       {
         for(i=ibegin; i<ibottom; i++)
-          D->ZplusJ[i+start]=D->Jx[i][j][kstart+k];
+          D->ZplusJ[i+start]=D->Jx[i][j][kend+k];
         start+=ibottom;
         for(i=ibegin; i<ibottom; i++)
-          D->ZplusJ[i+start]=D->Jy[i][j][kstart+k];
+          D->ZplusJ[i+start]=D->Jy[i][j][kend+k];
         start+=ibottom;
         for(i=ibegin; i<ibottom; i++)
-          D->ZplusJ[i+start]=D->Jz[i][j][kstart+k];
+          D->ZplusJ[i+start]=D->Jz[i][j][kend+k];
         start+=ibottom;
       }
     if(rank%2==1)
@@ -135,13 +135,13 @@ void MPI_TransferJ_DSX_Zplus(Domain *D)
       for(j=0; j<nySub+5; j++)
       {
         for(i=ibegin; i<ibottom; i++)
-          D->ZplusJ[i+start]=D->Jx[i][j][kstart+k];
+          D->ZplusJ[i+start]=D->Jx[i][j][kend+k];
         start+=ibottom;
         for(i=ibegin; i<ibottom; i++)
-          D->ZplusJ[i+start]=D->Jy[i][j][kstart+k];
+          D->ZplusJ[i+start]=D->Jy[i][j][kend+k];
         start+=ibottom;
         for(i=ibegin; i<ibottom; i++)
-          D->ZplusJ[i+start]=D->Jz[i][j][kstart+k];
+          D->ZplusJ[i+start]=D->Jz[i][j][kend+k];
         start+=ibottom;
       }
     if(rank%2==0 && rank!=0)

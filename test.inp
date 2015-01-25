@@ -9,27 +9,33 @@
 
 [Domain]
  Dimension=3
+ InterpolationType=1
  CurrentType=1
  FieldType=1
 
- maxStep=10
- saveStep=10
+ maxStep=300
+ saveStep=50
  saveStart=0
+
  dumpSave=0
  dumpStart=40000 
+ fieldSave=1
+ particleSave=1
+ rhoSave=1
 
+ //moving domain
  moving=0
 
  minX=0
- maxX=10e-6
+ maxX=30e-6
  minY=0
- maxY=10e-6
+ maxY=50e-6
  minZ=0
- maxZ=10e-6
+ maxZ=50e-6
  lambda=1e-6
  divisionLambda=10	// dx is [wavelength/divisionLambda]
- dy_over_dx = 1
- dz_over_dx = 1
+ dy_over_dx = 5
+ dz_over_dx = 5
 
  boostGamma=1
  filter=0
@@ -41,67 +47,67 @@
  pmlOn=0
  pmlCell=10
 
- L=1
- M=2
+ L=1	//not yet prepared
+ M=1
  N=2
 
 [Laser]
  wavelength=1e-6
- a0=3
- rU=1			//number of wave lenth
- rD=1
+ a0=1
+ rU=3			//number of wave lenth
+ rD=3
  flat=0
  polarity=2
- loadPositionX=1e-5		//laser start position [m]
- beamWaist=8e-6
- focus=40e-6
+ loadPositionX=0e-6		//laser start position [m]
+ beamWaist=4e-6
+ focus=10e-6
 
 
 [External]
- E1=0
- E2=0
- E3=0
- B1=0
- B2=0
- B3=0
+ Ex=0
+ Ey=0
+ Ez=0
+ Bx=0
+ By=0
+ Bz=0
 
 [Plasma]
  species=Electron
  type=Polygon
- density=0
- numberInCell=10
+ density=1e25
+ numberInCell=1
  startIndex=0		//The starting particle index
  velocityX=0.0
  with_next_species=0
  with_prev_species=0
  temperature=0
 
- Lnodes=4
- X0=10e-6
- X1=40e-6
- X2=9000e-6
- X3=9500e-6
+ Xnodes=4
+ X0=2e-6
+ X1=3e-6
+ X2=37e-6
+ X3=38e-6
  Xn0=0
  Xn1=1
  Xn2=1
- Xn3=1
+ Xn3=0
 
  Ynodes=4
- Y0=10e-6
- Y1=40e-6
- Y2=9000e-6
- Y3=9500e-6
+ Y0=2e-6
+ Y1=3e-6
+ Y2=47e-6
+ Y3=48e-6
  Yn0=0
  Yn1=1
  Yn2=1
- Yn3=1
+ Yn3=0
 
  Znodes=4
- Z0=10e-6
- Z1=40e-6
- Z2=9000e-6
- Z3=9500e-6
+ Z0=2e-6
+ Z1=3e-6
+ Z2=47e-6
+ Z3=48e-6
  Zn0=0
  Zn1=1
  Zn2=1
- Zn3=1
+ Zn3=0

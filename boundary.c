@@ -49,8 +49,6 @@ void boundary(Domain *D,External *Ext)
              D->minYSub=minY;
              D->maxYSub=maxY;
              D->nySub=tmp;
-             D->nextCore=myrank+D->M;
-             D->prevCore=myrank-D->M;
           }
        }
      }
@@ -70,8 +68,6 @@ void boundary(Domain *D,External *Ext)
              D->minZSub=minZ;
              D->maxZSub=maxZ;
              D->nzSub=tmp;
-             D->nextCore=myrank+1;
-             D->prevCore=myrank-1;
           }
        }
      }
@@ -170,21 +166,21 @@ printf("rank=%d, minXSub=%d,maxSub=%d,minYSub=%d,maxYSub=%d,minZSub=%d,maxZSub=%
     D->ZplusJ=(double *)malloc(numberData*sizeof(double ));
     numberData=2*3*(D->nx+5)*(D->nySub+5);
     D->ZminusJ=(double *)malloc(numberData*sizeof(double ));
-
+/*
      D->probe = (Probe **)malloc(D->probeNum*sizeof(Probe *));
      for(i=0; i<D->probeNum; i++)
        D->probe[i] = (Probe *)malloc((D->maxStep+1)*sizeof(Probe ));
      for(i=0; i<D->probeNum; i++)
        for(j=0; j<=D->maxStep; j++)
        {
-         D->probe[i][j].E1=0.0;
-         D->probe[i][j].Pr=0.0;
-         D->probe[i][j].Pl=0.0;
-         D->probe[i][j].B1=0.0;
-         D->probe[i][j].Sr=0.0;
-         D->probe[i][j].Sl=0.0;
+         D->probe[i][j].Ex=0.0;
+         D->probe[i][j].Ey=0.0;
+         D->probe[i][j].Ez=0.0;
+         D->probe[i][j].Bx=0.0;
+         D->probe[i][j].By=0.0;
+         D->probe[i][j].Bz=0.0;
        }
-
+*/
     //Share Field
     switch(D->dimension) {
     case 1 :
