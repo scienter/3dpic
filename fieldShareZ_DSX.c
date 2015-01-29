@@ -164,7 +164,7 @@ void MPI_TransferJ_DSX_Zplus(Domain *D)
     }
     else if(rank%2==1 && rank!=D->N-1)
     {
-      MPI_Send(D->ZplusJ,numberData, MPI_DOUBLE, myrank+1, myrank, MPI_COMM_WORLD);             
+      MPI_Send(D->ZplusJ,numberData, MPI_DOUBLE, myrank+D->M, myrank, MPI_COMM_WORLD);             
     }     
     MPI_Barrier(MPI_COMM_WORLD);        
 }
