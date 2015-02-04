@@ -252,7 +252,7 @@ void MPI_TransferJ_DSX_Zminus(Domain *D)
           D->ZminusJ[i+start]=D->Jz[i][j][kstart-k];
         start+=ibottom;
       }
-    if(rank%2==0 && rank!=D->N)
+    if(rank%2==0 && rank!=D->N-1)
     {
        MPI_Recv(D->ZminusJ,numberData, MPI_DOUBLE, myrank+D->M, myrank+D->M, MPI_COMM_WORLD,&status);  
        start=0;

@@ -15,6 +15,7 @@
 
 #define Polygon    1
 #define Circle    2
+#define Exp    3
 
 typedef struct _LoadList  {
    int type;

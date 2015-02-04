@@ -708,6 +708,7 @@ int whatPlasmaType(char *str)
 {
    if(strstr(str,"Polygon"))         return Polygon;
    else if(strstr(str,"Circle"))   	return Circle;
+   else if(strstr(str,"Exp"))   	return Exp;
    else return 0;
 }
 

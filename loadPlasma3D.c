@@ -422,7 +422,7 @@ void loadPlasma3D(Domain *D)
              for(t=0; t<LL->ynodes-1; t++)
                for(u=0; u<LL->znodes-1; u++)
                {
-                 if(LL->type==Polygon) {
+                 if(LL->type==Polygon || LL->type==Exp) {
                    posX=i+D->minXSub-istart;
                    posY=j+D->minYSub-jstart;
                    posZ=k+D->minZSub-kstart;
@@ -432,9 +432,17 @@ void loadPlasma3D(Domain *D)
                     posY>=LL->ypoint[t] && posY<LL->ypoint[t+1] &&
                     posZ>=LL->zpoint[u] && posZ<LL->zpoint[u+1])
                  {
-                   ne=((LL->xn[l+1]-LL->xn[l])/(LL->xpoint[l+1]-LL->xpoint[l])*(posX-LL->xpoint[l])+LL->xn[l]);
-                   ne*=((LL->yn[t+1]-LL->yn[t])/(LL->ypoint[t+1]-LL->ypoint[t])*(posY-LL->ypoint[t])+LL->yn[t]);
-                   ne*=((LL->zn[u+1]-LL->zn[u])/(LL->zpoint[u+1]-LL->zpoint[u])*(posZ-LL->zpoint[u])+LL->zn[u]);
+
+			        if(LL->type==Polygon) {
+                    ne=((LL->xn[l+1]-LL->xn[l])/(LL->xpoint[l+1]-LL->xpoint[l])*(posX-LL->xpoint[l])+LL->xn[l]);
+                    ne*=((LL->yn[t+1]-LL->yn[t])/(LL->ypoint[t+1]-LL->ypoint[t])*(posY-LL->ypoint[t])+LL->yn[t]);
+                    ne*=((LL->zn[u+1]-LL->zn[u])/(LL->zpoint[u+1]-LL->zpoint[u])*(posZ-LL->zpoint[u])+LL->zn[u]);
+					  }
+		 			  else if(LL->type==Exp) {
+		    			 if(l==0) ne=exp(10.0*(posX-LL->xpoint[l+1])/(LL->xpoint[l+1]-LL->xpoint[l]));
+		    			 else if(l==1) ne=1.0;
+				       else if(l==2) ne=exp(-10.0*(posX-LL->xpoint[l])/(LL->xpoint[l+1]-LL->xpoint[l]));
+					  }
                    ne*=LL->numberInCell;	//it is the float number of superparticles.
                    intNum=(int)ne;
                    randTest=ne-intNum;

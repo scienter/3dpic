@@ -59,6 +59,8 @@ int main(int argc, char *argv[])
       iteration = atoi(argv[2]);
       restoreData3D(&D,iteration);
       t=D.dt*iteration; 
+      iteration++;
+      t=D.dt*iteration; 
     }
     else 
     {
@@ -100,7 +102,7 @@ int main(int argc, char *argv[])
 
           if(D.fieldSave==1) { 
             saveField3D(&D,iteration);
-            saveRaman3D(&D,iteration);
+         //   saveRaman3D(&D,iteration);
             if(myrank==0)
               printf("field%d is made.\n",iteration);  
           }
@@ -128,16 +130,6 @@ int main(int argc, char *argv[])
        }
 
 
-       //load laser
-       if(D.boostOn==0)	{
-         L=D.laserList;
-         while(L->next)  {
-           loadLaser3D(&D,L,t); 
-//           if(L->direction==1)     loadLaser2D(&D,L,t); 
-//           else if(L->direction==-1)     loadLaserOpp2D(&D,L,t); 
-           L=L->next;
-         }
-       }
 
 
 //       if(nTasks==1)  periodY1core(&D);   
@@ -159,6 +151,17 @@ int main(int argc, char *argv[])
 //         if()  periodY1coreC(&D);   
 
 //         if(D.pmlOn==1)   absorpbingC(&D);
+       //load laser
+       if(D.boostOn==0)	{
+         L=D.laserList;
+         while(L->next)  {
+           loadLaser3D(&D,L,t); 
+//           if(L->direction==1)     loadLaser2D(&D,L,t); 
+//           else if(L->direction==-1)     loadLaserOpp2D(&D,L,t); 
+           L=L->next;
+         }
+       }
+
          solveField3D_DSX(&D);
          if(D.M>1)
          {
@@ -179,7 +182,11 @@ int main(int argc, char *argv[])
 //       else if(D.currentType==3)
 //         interpolation2D_3rd(&D,&Ext);
 
+//       MPI_Barrier(MPI_COMM_WORLD);
+
        particlePush3D(&D);
+
+//       MPI_Barrier(MPI_COMM_WORLD);
 
        if(D.fieldType==1)
        {
