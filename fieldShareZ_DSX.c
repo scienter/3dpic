@@ -312,13 +312,13 @@ void MPI_TransferF_DSX_ZminusC(Domain *D,float ***f1,float ***f2,float ***f3)
       {
         for(i=ibegin; i<ibottom; i++)
           D->minusZC[start+i]=f1[i][j][kstart+k];
-        start+=nx+5;
+        start+=ibottom;
         for(i=ibegin; i<ibottom; i++)
           D->minusZC[start+i]=f2[i][j][kstart+k];
-        start+=nx+5;
+        start+=ibottom;
         for(i=ibegin; i<ibottom; i++)
           D->minusZC[start+i]=f3[i][j][kstart+k];
-        start+=nx+5;
+        start+=ibottom;
       }
 
     if(rank%2==0 && rank!=D->N-1)
@@ -330,13 +330,13 @@ void MPI_TransferF_DSX_ZminusC(Domain *D,float ***f1,float ***f2,float ***f3)
         {
           for(i=ibegin; i<ibottom; i++)
             f1[i][j][kend+k]=D->minusZC[start+i];
-          start+=nx+5;
+          start+=ibottom;
           for(i=ibegin; i<ibottom; i++)
             f2[i][j][kend+k]=D->minusZC[start+i];
-          start+=nx+5;
+          start+=ibottom;
           for(i=ibegin; i<ibottom; i++)
             f3[i][j][kend+k]=D->minusZC[start+i];
-          start+=nx+5;
+          start+=ibottom;
         }  
     }
     else if(rank%2==1)
@@ -350,13 +350,13 @@ void MPI_TransferF_DSX_ZminusC(Domain *D,float ***f1,float ***f2,float ***f3)
       {
         for(i=ibegin; i<ibottom; i++)
           D->minusZC[start+i]=f1[i][j][kstart+k];
-        start+=nx+5;
+        start+=ibottom;
         for(i=ibegin; i<ibottom; i++)
           D->minusZC[start+i]=f2[i][j][kstart+k];
-        start+=nx+5;
+        start+=ibottom;
         for(i=ibegin; i<ibottom; i++)
           D->minusZC[start+i]=f3[i][j][kstart+k];
-        start+=nx+5;
+        start+=ibottom;
       }
         
     if(rank%2==1 && rank!=D->N-1)
@@ -368,13 +368,13 @@ void MPI_TransferF_DSX_ZminusC(Domain *D,float ***f1,float ***f2,float ***f3)
         {
           for(i=ibegin; i<ibottom; i++)
             f1[i][j][kend+k]=D->minusZC[start+i];
-          start+=nx+5;
+          start+=ibottom;
           for(i=ibegin; i<ibottom; i++)
             f2[i][j][kend+k]=D->minusZC[start+i];
-          start+=nx+5;
+          start+=ibottom;
           for(i=ibegin; i<ibottom; i++)
             f3[i][j][kend+k]=D->minusZC[start+i];
-          start+=nx+5;
+          start+=ibottom;
         }  
     }
     else if(rank%2==0 && rank!=0)
@@ -407,7 +407,7 @@ void MPI_TransferF_DSX_ZplusC(Domain *D,float ***f1,float ***f2,float ***f3)
     MPI_Comm_size(MPI_COMM_WORLD, &nTasks);
     MPI_Comm_rank(MPI_COMM_WORLD, &myrank);            
     //first 1 is 1 layer, 2nd 3 is 3 field variables
-    numberData=1*2*(nx+5)*(nySub+5); 
+    numberData=1*3*(nx+5)*(nySub+5); 
     rank=(int)(myrank/D->M);   
 
     //Transferring even ~ odd cores 
@@ -417,13 +417,13 @@ void MPI_TransferF_DSX_ZplusC(Domain *D,float ***f1,float ***f2,float ***f3)
       {
         for(i=ibegin; i<ibottom; i++)
           D->plusZC[start+i]=f1[i][j][kend-k];
-        start+=nx+5;
+        start+=ibottom;
         for(i=ibegin; i<ibottom; i++)
           D->plusZC[start+i]=f2[i][j][kend-k];
-        start+=nx+5;
+        start+=ibottom;
         for(i=ibegin; i<ibottom; i++)
           D->plusZC[start+i]=f3[i][j][kend-k];
-        start+=nx+5;
+        start+=ibottom;
       }
       
     if(rank%2==1)
@@ -435,13 +435,13 @@ void MPI_TransferF_DSX_ZplusC(Domain *D,float ***f1,float ***f2,float ***f3)
          {
            for(i=ibegin; i<ibottom; i++)
              f1[i][j][kstart-k]=D->plusZC[start+i];
-           start+=nx+5;
+           start+=ibottom;
            for(i=ibegin; i<ibottom; i++)
              f2[i][j][kstart-k]=D->plusZC[start+i];
-           start+=nx+5;
+           start+=ibottom;
            for(i=ibegin; i<ibottom; i++)
              f3[i][j][kstart-k]=D->plusZC[start+i];
-           start+=nx+5;
+           start+=ibottom;
          }
     }
     else if(rank%2==0 && rank!=D->N-1)
@@ -455,13 +455,13 @@ void MPI_TransferF_DSX_ZplusC(Domain *D,float ***f1,float ***f2,float ***f3)
       {
         for(i=ibegin; i<ibottom; i++)
           D->plusZC[start+i]=f1[i][j][kend-k];
-        start+=nx+5;
+        start+=ibottom;
         for(i=ibegin; i<ibottom; i++)
           D->plusZC[start+i]=f2[i][j][kend-k];
-        start+=nx+5;
+        start+=ibottom;
         for(i=ibegin; i<ibottom; i++)
           D->plusZC[start+i]=f3[i][j][kend-k];
-        start+=nx+5;
+        start+=ibottom;
       }
         
     if(rank%2==0 && rank!=0)
@@ -473,13 +473,13 @@ void MPI_TransferF_DSX_ZplusC(Domain *D,float ***f1,float ***f2,float ***f3)
          {
            for(i=ibegin; i<ibottom; i++)
              f1[i][j][kstart-k]=D->plusZC[start+i];
-           start+=nx+5;
+           start+=ibottom;
            for(i=ibegin; i<ibottom; i++)
              f2[i][j][kstart-k]=D->plusZC[start+i];
-           start+=nx+5;
+           start+=ibottom;
            for(i=ibegin; i<ibottom; i++)
              f3[i][j][kstart-k]=D->plusZC[start+i];
-           start+=nx+5;
+           start+=ibottom;
          }
     }
     else if(rank%2==1 && rank!=D->N-1)
@@ -525,22 +525,22 @@ void MPI_TransferF_DSX_Zminus(Domain *D,
       {
         for(i=ibegin; i<ibottom; i++)
           D->minusZ[start+i]=f1[i][j][kstart+k];
-        start+=nx+5;
+        start+=ibottom;
         for(i=ibegin; i<ibottom; i++)
           D->minusZ[start+i]=f2[i][j][kstart+k];
-        start+=nx+5;
+        start+=ibottom;
         for(i=ibegin; i<ibottom; i++)
           D->minusZ[start+i]=f3[i][j][kstart+k];
-        start+=nx+5;
+        start+=ibottom;
         for(i=ibegin; i<ibottom; i++)
           D->minusZ[start+i]=f4[i][j][kstart+k];
-        start+=nx+5;
+        start+=ibottom;
         for(i=ibegin; i<ibottom; i++)
           D->minusZ[start+i]=f5[i][j][kstart+k];
-        start+=nx+5;
+        start+=ibottom;
         for(i=ibegin; i<ibottom; i++)
           D->minusZ[start+i]=f6[i][j][kstart+k];
-        start+=nx+5;
+        start+=ibottom;
       }
 
     if(rank%2==0 && rank!=D->N-1)
@@ -552,22 +552,22 @@ void MPI_TransferF_DSX_Zminus(Domain *D,
         {
           for(i=ibegin; i<ibottom; i++)
             f1[i][j][kend+k]=D->minusZ[start+i];
-          start+=nx+5;
+          start+=ibottom;
           for(i=ibegin; i<ibottom; i++)
             f2[i][j][kend+k]=D->minusZ[start+i];
-          start+=nx+5;
+          start+=ibottom;
           for(i=ibegin; i<ibottom; i++)
             f3[i][j][kend+k]=D->minusZ[start+i];
-          start+=nx+5;
+          start+=ibottom;
           for(i=ibegin; i<ibottom; i++)
             f4[i][j][kend+k]=D->minusZ[start+i];
-          start+=nx+5;
+          start+=ibottom;
           for(i=ibegin; i<ibottom; i++)
             f5[i][j][kend+k]=D->minusZ[start+i];
-          start+=nx+5;
+          start+=ibottom;
           for(i=ibegin; i<ibottom; i++)
             f6[i][j][kend+k]=D->minusZ[start+i];
-          start+=nx+5;
+          start+=ibottom;
         }  
     }
     else if(rank%2==1)
@@ -581,22 +581,22 @@ void MPI_TransferF_DSX_Zminus(Domain *D,
       {
         for(i=ibegin; i<ibottom; i++)
           D->minusZ[start+i]=f1[i][j][kstart+k];
-        start+=nx+5;
+        start+=ibottom;
         for(i=ibegin; i<ibottom; i++)
           D->minusZ[start+i]=f2[i][j][kstart+k];
-        start+=nx+5;
+        start+=ibottom;
         for(i=ibegin; i<ibottom; i++)
           D->minusZ[start+i]=f3[i][j][kstart+k];
-        start+=nx+5;
+        start+=ibottom;
         for(i=ibegin; i<ibottom; i++)
           D->minusZ[start+i]=f4[i][j][kstart+k];
-        start+=nx+5;
+        start+=ibottom;
         for(i=ibegin; i<ibottom; i++)
           D->minusZ[start+i]=f5[i][j][kstart+k];
-        start+=nx+5;
+        start+=ibottom;
         for(i=ibegin; i<ibottom; i++)
           D->minusZ[start+i]=f6[i][j][kstart+k];
-        start+=nx+5;
+        start+=ibottom;
       }
         
     if(rank%2==1 && rank!=D->N-1)
@@ -608,22 +608,22 @@ void MPI_TransferF_DSX_Zminus(Domain *D,
         {
           for(i=ibegin; i<ibottom; i++)
             f1[i][j][kend+k]=D->minusZ[start+i];
-          start+=nx+5;
+          start+=ibottom;
           for(i=ibegin; i<ibottom; i++)
             f2[i][j][kend+k]=D->minusZ[start+i];
-          start+=nx+5;
+          start+=ibottom;
           for(i=ibegin; i<ibottom; i++)
             f3[i][j][kend+k]=D->minusZ[start+i];
-          start+=nx+5;
+          start+=ibottom;
           for(i=ibegin; i<ibottom; i++)
             f4[i][j][kend+k]=D->minusZ[start+i];
-          start+=nx+5;
+          start+=ibottom;
           for(i=ibegin; i<ibottom; i++)
             f5[i][j][kend+k]=D->minusZ[start+i];
-          start+=nx+5;
+          start+=ibottom;
           for(i=ibegin; i<ibottom; i++)
             f6[i][j][kend+k]=D->minusZ[start+i];
-          start+=nx+5;
+          start+=ibottom;
         }  
     }
     else if(rank%2==0 && rank!=0)
@@ -670,22 +670,22 @@ void MPI_TransferF_DSX_Zplus(Domain *D
       {
         for(i=ibegin; i<ibottom; i++)
           D->plusZ[start+i]=f1[i][j][kend-k];
-        start+=nx+5;
+        start+=ibottom;
         for(i=ibegin; i<ibottom; i++)
           D->plusZ[start+i]=f2[i][j][kend-k];
-        start+=nx+5;
+        start+=ibottom;
         for(i=ibegin; i<ibottom; i++)
           D->plusZ[start+i]=f3[i][j][kend-k];
-        start+=nx+5;
+        start+=ibottom;
         for(i=ibegin; i<ibottom; i++)
           D->plusZ[start+i]=f4[i][j][kend-k];
-        start+=nx+5;
+        start+=ibottom;
         for(i=ibegin; i<ibottom; i++)
           D->plusZ[start+i]=f5[i][j][kend-k];
-        start+=nx+5;
+        start+=ibottom;
         for(i=ibegin; i<ibottom; i++)
           D->plusZ[start+i]=f6[i][j][kend-k];
-        start+=nx+5;
+        start+=ibottom;
       }
       
     if(rank%2==1)
@@ -697,22 +697,22 @@ void MPI_TransferF_DSX_Zplus(Domain *D
          {
            for(i=ibegin; i<ibottom; i++)
              f1[i][j][kstart-k]=D->plusZ[start+i];
-           start+=nx+5;
+           start+=ibottom;
            for(i=ibegin; i<ibottom; i++)
              f2[i][j][kstart-k]=D->plusZ[start+i];
-           start+=nx+5;
+           start+=ibottom;
            for(i=ibegin; i<ibottom; i++)
              f3[i][j][kstart-k]=D->plusZ[start+i];
-           start+=nx+5;
+           start+=ibottom;
            for(i=ibegin; i<ibottom; i++)
              f4[i][j][kstart-k]=D->plusZ[start+i];
-           start+=nx+5;
+           start+=ibottom;
            for(i=ibegin; i<ibottom; i++)
              f5[i][j][kstart-k]=D->plusZ[start+i];
-           start+=nx+5;
+           start+=ibottom;
            for(i=ibegin; i<ibottom; i++)
              f6[i][j][kstart-k]=D->plusZ[start+i];
-           start+=nx+5;
+           start+=ibottom;
          }
     }
     else if(rank%2==0 && rank!=D->N-1)
@@ -726,22 +726,22 @@ void MPI_TransferF_DSX_Zplus(Domain *D
       {
         for(i=ibegin; i<ibottom; i++)
           D->plusZ[start+i]=f1[i][j][kend-k];
-        start+=nx+5;
+        start+=ibottom;
         for(i=ibegin; i<ibottom; i++)
           D->plusZ[start+i]=f2[i][j][kend-k];
-        start+=nx+5;
+        start+=ibottom;
         for(i=ibegin; i<ibottom; i++)
           D->plusZ[start+i]=f3[i][j][kend-k];
-        start+=nx+5;
+        start+=ibottom;
         for(i=ibegin; i<ibottom; i++)
           D->plusZ[start+i]=f4[i][j][kend-k];
-        start+=nx+5;
+        start+=ibottom;
         for(i=ibegin; i<ibottom; i++)
           D->plusZ[start+i]=f5[i][j][kend-k];
-        start+=nx+5;
+        start+=ibottom;
         for(i=ibegin; i<ibottom; i++)
           D->plusZ[start+i]=f6[i][j][kend-k];
-        start+=nx+5;
+        start+=ibottom;
       }
         
     if(rank%2==0 && rank!=0)
@@ -753,22 +753,22 @@ void MPI_TransferF_DSX_Zplus(Domain *D
          {
            for(i=ibegin; i<ibottom; i++)
              f1[i][j][kstart-k]=D->plusZ[start+i];
-           start+=nx+5;
+           start+=ibottom;
            for(i=ibegin; i<ibottom; i++)
              f2[i][j][kstart-k]=D->plusZ[start+i];
-           start+=nx+5;
+           start+=ibottom;
            for(i=ibegin; i<ibottom; i++)
              f3[i][j][kstart-k]=D->plusZ[start+i];
-           start+=nx+5;
+           start+=ibottom;
            for(i=ibegin; i<ibottom; i++)
              f4[i][j][kstart-k]=D->plusZ[start+i];
-           start+=nx+5;
+           start+=ibottom;
            for(i=ibegin; i<ibottom; i++)
              f5[i][j][kstart-k]=D->plusZ[start+i];
-           start+=nx+5;
+           start+=ibottom;
            for(i=ibegin; i<ibottom; i++)
              f6[i][j][kstart-k]=D->plusZ[start+i];
-           start+=nx+5;
+           start+=ibottom;
          }
     }
     else if(rank%2==1 && rank!=D->N-1)
